@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Addi | Toolkit Expert N2</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+:root {
+  --bg:#09090B; --card:#18181B; --input:#27272A; --border:#3F3F46;
+  --text:#F4F4F5; --muted:#A1A1AA; --cyan:#00D4FF; --blue:#0077FF;
+  --green:#4ADE80; --yellow:#F59E0B; --red:#F87171; --purple:#A855F7;
+  --purplebg:rgba(168,85,247,0.08); --cyanbg:rgba(0,212,255,0.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:20px}
+.app{max-width:860px;margin:0 auto}
+.header{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.logo{font-size:22px;font-weight:800;color:var(--cyan)}
+.logo span{color:var(--text)}
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:24px;gap:4px}
+.tab-btn{background:none;border:none;color:var(--muted);padding:10px 18px;cursor:pointer;font-size:14px;font-weight:500;border-bottom:2px solid transparent;transition:all .2s;display:flex;align-items:center;gap:6px}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+.tab{display:none}.tab.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+select,input{width:100%;background:var(--input);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 14px;font-size:14px;font-family:inherit;outline:none;transition:border .2s}
+select:focus,input:focus{border-color:var(--cyan)}
+.radio-grid{display:grid;gap:10px;margin-top:6px}
+.radio-grid.cols2{grid-template-columns:1fr 1fr}
+.radio-grid.cols3{grid-template-columns:1fr 1fr 1fr}
+.radio-label{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--input);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;color:var(--muted);transition:all .2s;user-select:none}
+.radio-label:hover{border-color:var(--cyan);color:var(--text)}
+.radio-label.sel{border-color:var(--cyan);background:var(--cyanbg);color:var(--text)}
+.radio-label.sel-warn{border-color:var(--yellow);background:rgba(245,158,11,.08);color:var(--text)}
+.radio-label.sel-red{border-color:var(--red);background:rgba(248,113,113,.08);color:var(--text)}
+.radio-label input[type=radio]{accent-color:var(--cyan);width:16px;height:16px;flex-shrink:0}
+.radio-col{flex-direction:column;text-align:center;gap:6px;justify-content:center}
+.btn-primary{width:100%;padding:14px;background:var(--blue);border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .2s;font-family:inherit}
+.btn-primary:hover{opacity:.85}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed}
+.btn-copy{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);border-radius:8px;color:var(--cyan);padding:8px 14px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:inherit;transition:all .2s;white-space:nowrap}
+.btn-copy:hover{background:rgba(0,212,255,.2)}
+.result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.email-body{background:var(--input);border:1px solid var(--border);border-radius:8px;padding:16px;font-size:14px;line-height:1.8;white-space:pre-wrap}
+.var-highlight{background:rgba(0,119,255,.15);color:#60A5FA;border-radius:4px;padding:1px 4px;font-weight:600}
+.hint{font-size:12px;color:var(--yellow);margin-top:10px;display:flex;align-items:center;gap:4px}
+.result-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-top:20px}
+.hidden{display:none}
+/* Tipificador */
+.casillas{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin:16px 0}
+.casilla{background:var(--input);border:1px solid rgba(0,212,255,.25);border-radius:8px;padding:12px}
+.casilla-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.casilla-value{font-size:13px;font-weight:600;color:var(--cyan)}
+.casilla-empty{color:var(--muted);font-style:italic}
+.soporte{background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.15);border-radius:8px;padding:14px;margin-top:12px;font-size:13px;color:var(--muted);line-height:1.6}
+.soporte strong{color:var(--text)}
+.alerta-qa{background:rgba(248,113,113,.07);border:1.5px solid var(--red);border-radius:10px;padding:16px;color:var(--red)}
+.alerta-open{background:rgba(245,158,11,.07);border:1.5px solid var(--yellow);border-radius:10px;padding:16px;color:var(--yellow)}
+.check-list{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--input);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;color:var(--muted);transition:all .2s;user-select:none;line-height:1.5}
+.check-item:hover{border-color:var(--yellow);color:var(--text)}
+.check-item.done{border-color:rgba(74,222,128,.4);background:rgba(74,222,128,.05);color:var(--text);text-decoration:line-through;opacity:.7}
+.check-item input[type=checkbox]{accent-color:var(--green);width:16px;height:16px;flex-shrink:0;margin-top:1px}
+.banner-ok{display:none;margin-top:14px;padding:14px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.3);border-radius:10px;color:var(--green);font-weight:700;font-size:14px;align-items:center;gap:10px}
+.section-label{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeIn .3s ease}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="logo">Addi <span>| Toolkit N2</span></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('tipificador',this)">
+      <i data-lucide="layout-template" width="16"></i> Tipificador QA
+    </button>
+    <button class="tab-btn" onclick="switchTab('redactor',this)">
+      <i data-lucide="mail" width="16"></i> Redactor de Mensajes
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- TAB 1: TIPIFICADOR                      -->
+  <!-- ═══════════════════════════════════════ -->
+  <div id="tab-tipificador" class="tab active">
+
+    <div class="card">
+      <div class="label"><i data-lucide="folder-tree" width="14"></i> 1. Motivo del caso</div>
+      <select id="tip-motivo" onchange="tipOnMotivoChange()">
+        <option value="" disabled selected>Selecciona el motivo de ingreso...</option>
+        <optgroup label="Información del pedido">
+          <option value="info_factura">Solicitud de factura / Documentos</option>
+          <option value="info_guia">Novedad / Seguimiento de la guía</option>
+          <option value="info_norecibido">Producto entregado no recibido</option>
+          <option value="info_incompleto">El producto está incompleto</option>
+          <option value="info_reactivacion">Reactivación de compra</option>
+        </optgroup>
+        <optgroup label="Quiero devolver el producto">
+          <option value="dev_diferente">No es el producto que pedí / Diferencia a lo ofertado</option>
+          <option value="dev_danado">El producto está dañado / defectuoso</option>
+          <option value="dev_replica">Réplica</option>
+        </optgroup>
+        <optgroup label="Quiero cancelar la compra">
+          <option value="canc_demora">Ya pasó la fecha de entrega</option>
+          <option value="canc_retracto">Arrepentimiento de la orden (Retracto)</option>
+        </optgroup>
+        <optgroup label="Cambio en la orden">
+          <option value="cambio_datos">Datos de entrega</option>
+          <option value="cambio_productos">Productos de la orden</option>
+        </optgroup>
+        <optgroup label="Solicitud del aliado">
+          <option value="aliado_reactivacion">Reactivación de compra</option>
+          <option value="aliado_cancelacion">Solicitud de cancelación</option>
+          <option value="aliado_novedad">Novedad / Confirmación datos</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <div id="tip-preguntas"></div>
+
+    <button class="btn-primary hidden" id="tip-btn" onclick="tipMostrarCierre()" style="margin-bottom:20px">
+      <i data-lucide="layout-template" width="18"></i> Mostrar tipificación de cierre
+    </button>
+
+    <div id="tip-resultado" class="hidden"></div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- TAB 2: REDACTOR                         -->
+  <!-- ═══════════════════════════════════════ -->
+  <div id="tab-redactor" class="tab">
+
+    <div class="card">
+      <div class="label"><i data-lucide="users" width="14"></i> 1. ¿A quién vas a escribir?</div>
+      <div class="radio-grid cols2">
+        <label class="radio-label" onclick="redOnDest('aliado',this)">
+          <input type="radio" name="r-dest" value="aliado">
+          <i data-lucide="building-2" width="16" style="color:var(--cyan)"></i> Al Aliado
+        </label>
+        <label class="radio-label" onclick="redOnDest('cliente',this)">
+          <input type="radio" name="r-dest" value="cliente">
+          <i data-lucide="user" width="16" style="color:var(--green)"></i> Al Cliente
+        </label>
+      </div>
+    </div>
+
+    <div id="red-gest-zone" class="card hidden fade">
+      <div class="label"><i data-lucide="layers" width="14"></i> 2. ¿Qué tipo de gestión?</div>
+      <div class="radio-grid cols2">
+        <label class="radio-label" onclick="redOnGest('push',this)">
+          <input type="radio" name="r-gest" value="push">
+          <i data-lucide="bell" width="16" style="color:var(--yellow)"></i> Seguimiento / Push
+        </label>
+        <label class="radio-label" onclick="redOnGest('cierre',this)">
+          <input type="radio" name="r-gest" value="cierre">
+          <i data-lucide="check-circle" width="16" style="color:var(--green)"></i> Cierre del caso
+        </label>
+      </div>
+    </div>
+
+    <div id="red-motivo-zone" class="card hidden fade">
+      <div class="label"><i data-lucide="folder-tree" width="14"></i> 3. Motivo del caso</div>
+      <select id="red-motivo" onchange="redOnMotivo(this.value)">
+        <option value="" disabled selected>Selecciona el motivo...</option>
+      </select>
+    </div>
+
+    <div id="red-urg-zone" class="card hidden fade">
+      <div class="label"><i data-lucide="clock" width="14"></i> 4. ¿Cuántos días sin respuesta?</div>
+      <div class="radio-grid cols3">
+        <label class="radio-label radio-col" onclick="redOnUrg('normal',this)">
+          <input type="radio" name="r-urg" value="normal">
+          <i data-lucide="smile" width="18" style="color:var(--green)"></i>
+          <span>Normal<br><small style="color:var(--muted)">1-4 días</small></span>
+        </label>
+        <label class="radio-label radio-col sel-warn" onclick="redOnUrg('urgente',this)">
+          <input type="radio" name="r-urg" value="urgente">
+          <i data-lucide="alert-triangle" width="18" style="color:var(--yellow)"></i>
+          <span>Urgente<br><small style="color:var(--muted)">Cerca del límite</small></span>
+        </label>
+        <label class="radio-label radio-col" onclick="redOnUrg('ultimatum',this)">
+          <input type="radio" name="r-urg" value="ultimatum">
+          <i data-lucide="x-circle" width="18" style="color:var(--red)"></i>
+          <span>Ultimátum<br><small style="color:var(--muted)">Límite superado</small></span>
+        </label>
+      </div>
+    </div>
+
+    <div id="red-resultado" class="hidden"></div>
+
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// UTILIDADES
+// ═══════════════════════════════════════════════════════
+function icons(){ if(typeof lucide!=='undefined') lucide.createIcons(); }
+document.addEventListener('DOMContentLoaded', ()=>{
+  const t = setInterval(()=>{ if(typeof lucide!=='undefined'){ lucide.createIcons(); clearInterval(t); } }, 50);
+});
+
+function switchTab(name, btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+
+function fmtVars(txt){
+  let s = txt.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  s = s.replace(/\n/g,'<br>');
+  return s.replace(/\[([^\]]+)\]/g,"<span class='var-highlight'>[$1]</span>");
+}
+
+// ═══════════════════════════════════════════════════════
+// TIPIFICADOR — árbol de decisiones
+// ═══════════════════════════════════════════════════════
+const TIP_DB = {
+  cancelacion_aliado:      {macro:"Cierre del caso MP",sub:"Sub Orden Cancelada",micro:"Cancelación por el aliado",esp:"",nota:"El aliado realizó la cancelación total del crédito en su sistema."},
+  cancelacion_addi_7d:     {macro:"Cierre del caso MP",sub:"Sub Orden Cancelada",micro:"Cancelación Addi",esp:"Sin respuesta del aliado",nota:"El aliado no respondió en 7 días hábiles. Addi cancela para proteger al cliente."},
+  cancelacion_addi_interna:{macro:"Cierre del caso MP",sub:"Sub Orden Cancelada",micro:"Cancelación Addi",esp:"Solicitud interna",nota:"El aliado solicitó a Addi realizar la cancelación por problemas de integración."},
+  cancelacion_parcial:     {macro:"Cierre del caso MP",sub:"Sub Orden Activa",micro:"Cancelación parcial",esp:"",nota:"Se cancela solo una parte de la orden, dejando saldo activo en el crédito."},
+  aliado_rechaza:          {macro:"Cierre del caso MP",sub:"Sub Orden Activa",micro:"Aliado rechaza escalamiento",esp:"",nota:"El aliado rechaza la solicitud por políticas o tiempos."},
+  aliado_rechaza_con_pqr:  {macro:"Cierre del caso MP",sub:"Sub Orden Activa",micro:"Aliado rechaza escalamiento",esp:"",nota:"El aliado presenta PQR válida que demuestra la entrega del producto."},
+  addi_rechaza:            {macro:"Cierre del caso MP",sub:"Sub Orden Activa",micro:"Addi rechaza escalamiento",esp:"",nota:"Addi niega la solicitud del cliente por incumplir políticas o tiempos."},
+  falta_respuesta_cliente: {macro:"Cierre del caso MP",sub:"Sub Orden Activa",micro:"Falta de respuesta del cliente",esp:"",nota:"El cliente no respondió en 5 días hábiles o no envió evidencias."},
+  garantia_exitosa:        {macro:"Cierre del caso MP",sub:"Sub Orden Activa",micro:"Garantías",esp:"Garantía exitosa",nota:"El aliado solucionó enviando repuesto, reparando o enviando producto nuevo."},
+  garantia_negada_aliado:  {macro:"Cierre del caso MP",sub:"Sub Orden Activa",micro:"Garantías",esp:"Garantía negada aliado",nota:"El aliado rechaza la garantía por mal uso, políticas propias o tiempo vencido."},
+  garantia_negada_addi:    {macro:"Cierre del caso MP",sub:"Sub Orden Activa",micro:"Garantías",esp:"Garantía negada Addi",nota:"Addi niega la garantía sin escalar al comercio."},
+  condonacion_interna:     {macro:"Cierre del caso MP",sub:"Sub Orden Activa",micro:"Condonación interna",esp:"",nota:"Addi asume el valor de la compra por error atribuible a la plataforma (N1/N2)."},
+  cliente_desiste:         {macro:"Cierre del caso MP",sub:"Sub Orden Activa",micro:"Cliente desiste del escalamiento",esp:"",nota:"El cliente indica voluntariamente que no desea continuar el proceso."},
+  entrega_transporte:      {macro:"Cierre del caso MP",sub:"Sub Orden Activa",micro:"Entrega y transporte",esp:"",nota:"El producto fue entregado. Hay guía activa o PQR que confirma la entrega."},
+  aliado_cliente_contacto: {macro:"Cierre del caso MP",sub:"Sub Orden Activa",micro:"Aliado y cliente en contacto",esp:"",nota:"Ambas partes confirman que solucionarán el inconveniente directamente."},
+  credito_reactivado:      {macro:"Cierre del caso MP",sub:"Sub Orden Cancelada",micro:"Crédito reactivado",esp:"",nota:"Se genera la reactivación de un crédito cancelado previamente."},
+  caso_abierto_pqr:        {macro:"⚠️ CASO ABIERTO",sub:"Prohibido tipificar cierre",micro:"Falta PQR válida",esp:"Solicitar soporte a transportadora",nota:"El aliado no tiene PQR ni guía firmada. Mantener en gestión y exigir el soporte."},
+  caso_abierto_aliado:     {macro:"⏳ EN GESTIÓN",sub:"Esperando respuesta del aliado",micro:"—",esp:"—",nota:"El aliado aún no ha respondido. Hacer seguimiento hasta cumplir los 7 días hábiles."},
+  caso_abierto_cliente:    {macro:"⏳ EN GESTIÓN",sub:"Esperando respuesta del cliente",micro:"—",esp:"—",nota:"El cliente aún no ha respondido. Hacer seguimiento hasta cumplir los 5 días hábiles."},
+};
+
+const TIP_ARBOL = {
+  info_factura:{p:"¿El aliado ya envió la factura?",o:[
+    {t:"✅ Sí, ya fue enviada",s:"aliado_cliente_contacto"},
+    {t:"⏳ No ha respondido aún",s:"caso_abierto_aliado"},
+    {t:"🔴 Pasaron más de 7 días sin respuesta",s:"cancelacion_addi_7d"},
+    {t:"👤 El cliente no respondió en 5 días",s:"falta_respuesta_cliente"}
+  ]},
+  info_guia:{p:"¿Cuál es el estado actual de la guía?",o:[
+    {t:"✅ El producto fue entregado exitosamente",s:"entrega_transporte"},
+    {t:"🚫 El cliente rechazó la entrega",s:{p:"¿El aliado confirmó la gestión de devolución?",o:[
+      {t:"✅ Sí, coordina la devolución",s:"cancelacion_aliado"},
+      {t:"⏳ No ha respondido aún",s:"caso_abierto_aliado"},
+      {t:"🔴 Pasaron más de 7 días",s:"cancelacion_addi_7d"}
+    ]}},
+    {t:"❓ Guía perdida / sin novedad de transportadora",s:{p:"¿El aliado abrió PQR con la transportadora?",o:[
+      {t:"✅ Sí, PQR activa — esperando resultado",s:"caso_abierto_aliado"},
+      {t:"⏳ No ha respondido / no ha abierto PQR",s:"caso_abierto_aliado"},
+      {t:"🔴 Pasaron más de 7 días sin gestión",s:"cancelacion_addi_7d"}
+    ]}},
+    {t:"🔄 Novedad activa (intento fallido, dirección incorrecta)",s:"caso_abierto_aliado"}
+  ]},
+  info_norecibido:{p:"¿El aliado afirma que sí fue entregado?",o:[
+    {t:"✅ Sí, y el cliente confirmó que lo recibió",s:"entrega_transporte"},
+    {t:"✅ Sí, y tiene PQR válida o guía firmada",s:"aliado_rechaza_con_pqr"},
+    {t:"⚠️ Sí, pero NO tiene PQR ni guía firmada",s:"caso_abierto_pqr"},
+    {t:"⏳ No ha respondido aún",s:"caso_abierto_aliado"},
+    {t:"🔴 Pasaron más de 7 días sin respuesta",s:"cancelacion_addi_7d"},
+    {t:"👤 El cliente no respondió en 5 días",s:"falta_respuesta_cliente"}
+  ]},
+  info_incompleto:{p:"¿Qué respondió el aliado sobre el producto incompleto?",o:[
+    {t:"✅ Acepta enviar la parte faltante",s:"garantia_exitosa"},
+    {t:"🚫 Rechaza la solicitud",s:"garantia_negada_aliado"},
+    {t:"⏳ No ha respondido aún",s:"caso_abierto_aliado"},
+    {t:"🔴 Pasaron más de 7 días",s:"cancelacion_addi_7d"},
+    {t:"👤 El cliente no respondió en 5 días",s:"falta_respuesta_cliente"}
+  ]},
+  info_reactivacion:{p:"¿Se confirmó la reactivación del crédito?",o:[
+    {t:"✅ Sí, crédito reactivado exitosamente",s:"credito_reactivado"},
+    {t:"⏳ En proceso — esperando confirmación",s:"caso_abierto_aliado"}
+  ]},
+  dev_diferente:{p:"¿Qué respondió el aliado sobre el producto diferente?",o:[
+    {t:"✅ Acepta devolución y reenvío del producto correcto",s:"garantia_exitosa"},
+    {t:"🚫 Rechaza la solicitud",s:"garantia_negada_aliado"},
+    {t:"⏳ No ha respondido aún",s:"caso_abierto_aliado"},
+    {t:"🔴 Pasaron más de 7 días",s:"cancelacion_addi_7d"},
+    {t:"👤 El cliente no respondió en 5 días",s:"falta_respuesta_cliente"},
+    {t:"🤝 Aliado y cliente acordaron solución directa",s:"aliado_cliente_contacto"}
+  ]},
+  dev_danado:{p:"¿El aliado aceptó la garantía?",o:[
+    {t:"✅ Sí — enviará repuesto, reparación o producto nuevo",s:"garantia_exitosa"},
+    {t:"🚫 No — garantía negada por el aliado",s:"garantia_negada_aliado"},
+    {t:"🚫 No — garantía negada por Addi",s:"garantia_negada_addi"},
+    {t:"⏳ No ha respondido aún",s:"caso_abierto_aliado"},
+    {t:"🔴 Pasaron más de 7 días",s:"cancelacion_addi_7d"},
+    {t:"👤 El cliente no respondió en 5 días",s:"falta_respuesta_cliente"}
+  ]},
+  dev_replica:{p:"¿El aliado reconoce que el producto es réplica?",o:[
+    {t:"✅ Sí, acepta devolución y cancelación",s:"cancelacion_aliado"},
+    {t:"🚫 No, rechaza la solicitud",s:"aliado_rechaza"},
+    {t:"⏳ No ha respondido aún",s:"caso_abierto_aliado"},
+    {t:"🔴 Pasaron más de 7 días",s:"cancelacion_addi_7d"},
+    {t:"👤 El cliente no respondió en 5 días",s:"falta_respuesta_cliente"}
+  ]},
+  canc_demora:{p:"¿El aliado respondió sobre el estado del pedido?",o:[
+    {t:"✅ Confirma que el pedido está en camino",s:"caso_abierto_aliado"},
+    {t:"✅ Acepta la cancelación por demora",s:"cancelacion_aliado"},
+    {t:"🚫 Rechaza la cancelación",s:"aliado_rechaza"},
+    {t:"⏳ No ha respondido aún",s:"caso_abierto_aliado"},
+    {t:"🔴 Pasaron más de 7 días",s:"cancelacion_addi_7d"},
+    {t:"👤 El cliente desiste del escalamiento",s:"cliente_desiste"}
+  ]},
+  canc_retracto:{p:"¿El producto ya fue entregado al cliente?",o:[
+    {t:"❌ No, aún no fue entregado",s:{p:"¿El aliado acepta el retracto?",o:[
+      {t:"✅ Sí, acepta cancelación",s:"cancelacion_aliado"},
+      {t:"🚫 No, rechaza el retracto",s:"aliado_rechaza"},
+      {t:"⏳ No ha respondido aún",s:"caso_abierto_aliado"},
+      {t:"🔴 Pasaron más de 7 días",s:"cancelacion_addi_7d"}
+    ]}},
+    {t:"✅ Sí, fue entregado y el cliente lo rechazó",s:{p:"¿El aliado coordinó la devolución con la transportadora?",o:[
+      {t:"✅ Sí, devolución coordinada",s:"cancelacion_aliado"},
+      {t:"⏳ No ha respondido aún",s:"caso_abierto_aliado"},
+      {t:"🔴 Pasaron más de 7 días",s:"cancelacion_addi_7d"}
+    ]}},
+    {t:"✅ Sí, fue entregado y el cliente lo tiene",s:{p:"¿El aliado acepta el retracto con producto en casa?",o:[
+      {t:"✅ Sí, acepta devolución",s:"cancelacion_aliado"},
+      {t:"🚫 No, rechaza el retracto",s:"aliado_rechaza"},
+      {t:"⏳ No ha respondido aún",s:"caso_abierto_aliado"},
+      {t:"🔴 Pasaron más de 7 días",s:"cancelacion_addi_7d"},
+      {t:"👤 El cliente decide conservar el producto",s:"entrega_transporte"}
+    ]}}
+  ]},
+  cambio_datos:{p:"¿El aliado realizó el cambio de datos de entrega?",o:[
+    {t:"✅ Sí, cambio exitoso",s:"entrega_transporte"},
+    {t:"🚫 No es posible — pedido ya en camino",s:"aliado_rechaza"},
+    {t:"⏳ No ha respondido aún",s:"caso_abierto_aliado"},
+    {t:"🔴 Pasaron más de 7 días",s:"cancelacion_addi_7d"}
+  ]},
+  cambio_productos:{p:"¿El aliado pudo modificar los productos de la orden?",o:[
+    {t:"✅ Sí, cambio exitoso",s:"aliado_cliente_contacto"},
+    {t:"🚫 No es posible — orden ya procesada",s:"aliado_rechaza"},
+    {t:"⏳ No ha respondido aún",s:"caso_abierto_aliado"},
+    {t:"🔴 Pasaron más de 7 días",s:"cancelacion_addi_7d"}
+  ]},
+  aliado_reactivacion:{p:"¿Se procesó la reactivación del crédito?",o:[
+    {t:"✅ Sí, crédito reactivado",s:"credito_reactivado"},
+    {t:"⏳ En proceso",s:"caso_abierto_aliado"}
+  ]},
+  aliado_cancelacion:{p:"¿Cuál es el origen de la solicitud de cancelación?",o:[
+    {t:"🔧 Problema de integración — Addi debe cancelar",s:"cancelacion_addi_interna"},
+    {t:"✅ El aliado cancela directamente en su sistema",s:"cancelacion_aliado"},
+    {t:"⏳ Pendiente de gestión",s:"caso_abierto_aliado"}
+  ]},
+  aliado_novedad:{p:"¿De qué trata la novedad o confirmación?",o:[
+    {t:"✅ Confirmación de datos — todo correcto",s:"entrega_transporte"},
+    {t:"🔄 Novedad de guía — requiere seguimiento",s:"caso_abierto_aliado"},
+    {t:"🤝 Aliado y cliente acordaron solución directa",s:"aliado_cliente_contacto"}
+  ]}
+};
+
+let tipStack = [];
+let tipCierreKey = null;
+
+function tipOnMotivoChange(){
+  const motivo = document.getElementById('tip-motivo').value;
+  document.getElementById('tip-preguntas').innerHTML='';
+  document.getElementById('tip-btn').classList.add('hidden');
+  document.getElementById('tip-resultado').classList.add('hidden');
+  tipStack = [];
+  tipCierreKey = null;
+  if(!motivo || !TIP_ARBOL[motivo]) return;
+  tipStack.push(TIP_ARBOL[motivo]);
+  tipRenderPregunta(TIP_ARBOL[motivo], 1);
+}
+
+function tipRenderPregunta(nodo, paso){
+  const zona = document.getElementById('tip-preguntas');
+  const div = document.createElement('div');
+  div.className = 'card fade';
+  div.id = 'tip-paso-'+paso;
+  const esAlerta = paso > 1;
+  if(esAlerta) div.style.borderLeft = '3px solid var(--yellow)';
+  div.innerHTML = `
+    <div class="label" style="${esAlerta?'color:var(--yellow)':''}">
+      <i data-lucide="${esAlerta?'alert-circle':'help-circle'}" width="14"></i> ${paso}. ${nodo.p}
+    </div>
+    <select onchange="tipOnRespuesta(${paso}, this.value)">
+      <option value="" disabled selected>Selecciona la respuesta...</option>
+      ${nodo.o.map((op,i)=>`<option value="${i}">${op.t}</option>`).join('')}
+    </select>`;
+  zona.appendChild(div);
+  icons();
+}
+
+function tipOnRespuesta(paso, idxStr){
+  if(idxStr==='') return;
+  // limpiar pasos posteriores
+  const zona = document.getElementById('tip-preguntas');
+  zona.querySelectorAll('[id^="tip-paso-"]').forEach(el=>{
+    if(parseInt(el.id.replace('tip-paso-',''))>paso) el.remove();
+  });
+  tipStack = tipStack.slice(0, paso);
+  tipCierreKey = null;
+  document.getElementById('tip-btn').classList.add('hidden');
+  document.getElementById('tip-resultado').classList.add('hidden');
+
+  const nodoActual = tipStack[paso-1];
+  if(!nodoActual) return;
+  const opcion = nodoActual.o[parseInt(idxStr)];
+  if(!opcion) return;
+  const sig = opcion.s;
+
+  if(typeof sig === 'string'){
+    tipCierreKey = sig;
+    document.getElementById('tip-btn').classList.remove('hidden');
+  } else {
+    tipStack.push(sig);
+    tipRenderPregunta(sig, paso+1);
+  }
+}
+
+function tipMostrarCierre(){
+  const cierre = TIP_DB[tipCierreKey];
+  if(!cierre) return;
+
+  const esAbierto = cierre.macro.includes('ABIERTO') || cierre.macro.includes('GESTIÓN');
+  const rutaTexto = [cierre.macro, cierre.sub, cierre.micro, cierre.esp].filter(Boolean).join(' > ');
+  window._tipRuta = rutaTexto;
+
+  const color = esAbierto ? (cierre.macro.includes('ABIERTO')?'var(--red)':'var(--yellow)') : 'var(--cyan)';
+  const iconName = esAbierto ? (cierre.macro.includes('ABIERTO')?'x-circle':'clock') : 'check-circle';
+
+  let html = `<div class="result-box fade" style="border-color:${color}">
+    <div class="result-header">
+      <h3 style="color:${color};display:flex;align-items:center;gap:8px;font-size:16px">
+        <i data-lucide="${iconName}" width="20" style="color:${color}"></i>
+        ${esAbierto ? cierre.macro : 'Tipificación de Cierre'}
+      </h3>
+      ${!esAbierto?`<button class="btn-copy" onclick="tipCopiarRuta()"><i data-lucide="copy" width="14"></i> Copiar ruta</button>`:''}
+    </div>`;
+
+  if(!esAbierto){
+    html += `<div class="casillas">
+      <div class="casilla"><div class="casilla-label">Macro</div><div class="casilla-value">${cierre.macro}</div></div>
+      <div class="casilla"><div class="casilla-label">Sub</div><div class="casilla-value">${cierre.sub||'<span class="casilla-empty">No aplica</span>'}</div></div>
+      <div class="casilla"><div class="casilla-label">Micro</div><div class="casilla-value">${cierre.micro||'<span class="casilla-empty">No aplica</span>'}</div></div>
+      <div class="casilla"><div class="casilla-label">Especificidad</div><div class="casilla-value">${cierre.esp||'<span class="casilla-empty">No aplica</span>'}</div></div>
+    </div>`;
+  }
+
+  html += `<div class="soporte"><strong>${esAbierto?'⚠️ Acción requerida':'📋 Nota de soporte'}:</strong> ${cierre.nota}</div>`;
+
+  if(!esAbierto){
+    html += `<div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+      <div class="section-label">✅ Checklist antes de cerrar</div>
+      <div class="check-list" id="tip-checklist">
+        <label class="check-item" onclick="tipToggleCheck(this)"><input type="checkbox"><span>Envié el correo de cierre al <strong>aliado</strong> notificando el resultado</span></label>
+        <label class="check-item" onclick="tipToggleCheck(this)"><input type="checkbox"><span>Llamé al cliente <strong>2 veces</strong> — si no contestó: SMS + correo</span></label>
+        <label class="check-item" onclick="tipToggleCheck(this)"><input type="checkbox"><span>Verifiqué que el <strong>número de radicado</strong> en el correo es el correcto</span></label>
+        <label class="check-item" onclick="tipToggleCheck(this)"><input type="checkbox"><span>La tipificación en Kustomer coincide exactamente con la ruta sugerida</span></label>
+      </div>
+      <div class="banner-ok" id="tip-banner"><i data-lucide="party-popper" width="20"></i> ¡Tu cierre quedó perfecto! Puedes cerrar el caso con confianza. ✅</div>
+    </div>`;
+  }
+
+  html += `</div>`;
+
+  const zona = document.getElementById('tip-resultado');
+  zona.innerHTML = html;
+  zona.classList.remove('hidden');
+  icons();
+}
+
+function tipCopiarRuta(){
+  navigator.clipboard.writeText(window._tipRuta||'').then(()=>{
+    const btn = document.querySelector('#tip-resultado .btn-copy');
+    if(!btn) return;
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<i data-lucide="check" width="14"></i> ¡Copiado!';
+    btn.style.background='var(--green)'; btn.style.color='#000'; btn.style.borderColor='var(--green)';
+    icons();
+    setTimeout(()=>{ btn.innerHTML=orig; btn.style.background=''; btn.style.color=''; btn.style.borderColor=''; icons(); }, 2000);
+  });
+}
+
+function tipToggleCheck(label){
+  setTimeout(()=>{
+    const cb = label.querySelector('input');
+    label.classList.toggle('done', cb.checked);
+    const todos = document.querySelectorAll('#tip-checklist input');
+    const marcados = document.querySelectorAll('#tip-checklist input:checked');
+    const banner = document.getElementById('tip-banner');
+    if(banner) banner.style.display = (todos.length===marcados.length && todos.length>0)?'flex':'none';
+    if(todos.length===marcados.length && todos.length>0) icons();
+  },0);
+}
+
+// ═══════════════════════════════════════════════════════
+// REDACTOR — sistema de filtros + plantillas
+// ═══════════════════════════════════════════════════════
+const RED_DB = {
+  aliado:{
+    push:{
+      motivos:[
+        {val:"general",label:"Seguimiento general"},
+        {val:"garantia",label:"Garantía / Producto dañado"},
+        {val:"guia",label:"Guía / Seguimiento envío"},
+        {val:"cancelacion",label:"Cancelación"},
+        {val:"factura",label:"Factura / Documentos"},
+        {val:"direccion",label:"Cambio de dirección"},
+        {val:"devolucion",label:"Datos de devolución"},
+        {val:"rechazo",label:"Documento formal de rechazo"},
+        {val:"ley1480",label:"Garantía sin empaque (Ley 1480)"},
+        {val:"detener",label:"Detener despacho urgente"},
+        {val:"retracto_detener",label:"Retener envío por retracto"}
+      ],
+      urgencia:true,
+      p:{
+        general:{
+          normal:{t:"Seguimiento general — Aliado",c:"¡Hola, Equipo!\n\nEspero que se encuentren muy bien. Nos ponemos en contacto para solicitar una actualización respecto a [breve descripción del caso].\n\nAgradecemos si pueden compartir el estado actual o cualquier avance relevante.\n\nQuedamos atentos a su respuesta. ¡Gracias!\n\nAddi MarketPlace Support\nBogotá, Colombia"},
+          urgente:{t:"Seguimiento urgente — Aliado",c:"¡Hola, Equipo!\n\nEspero que se encuentren muy bien.\n\nSeguimos pendientes de esta solicitud. Quedamos atentos a su pronta respuesta para dar cierre a este caso.\n\nAddi MarketPlace Support\nBogotá, Colombia"},
+          ultimatum:{t:"Ultimátum — Fecha límite",c:"Equipo,\n\nRevisando el historial del caso y el tiempo excesivo transcurrido sin solución, hemos definido un plazo límite:\n\nLes brindamos la facilidad de realizar la cancelación a más tardar hoy, [fecha].\n\nDe lo contrario, mañana [fecha siguiente] procederemos con la cancelación interna de inmediato.\n\nEl cliente se comunica de manera insistente y nuestra prioridad es no afectar más su experiencia."}
+        },
+        garantia:{
+          normal:{t:"Seguimiento garantía — Aliado",c:"¡Hola, equipo!\n\nNos gustaría hacer un seguimiento sobre el estado de la solicitud de garantía del producto. Les pedimos su ayuda con la actualización del proceso.\n\nEstaremos atentos al paso a seguir."},
+          urgente:{t:"Garantía urgente — Aliado",c:"¡Hola, equipo!\n\nEstamos dando seguimiento al caso y aún no tenemos respuesta sobre la garantía. El cliente espera una solución. Solicitamos una actualización inmediata.\n\nEstaremos atentos."},
+          ultimatum:{t:"Ultimátum garantía — Aliado",c:"Equipo,\n\nNuevamente realizamos seguimiento. Hasta la fecha no hemos recibido respuesta sobre la garantía. Solicitamos actualización inmediata.\n\nEstaremos atentos al paso a seguir."}
+        },
+        guia:{
+          normal:{t:"Seguimiento guía — Aliado",c:"¡Hola Equipo!\n\nNos gustaría realizar un seguimiento sobre el estado del envío y el número de guía de la compra.\n\nEstaremos atentos al paso a seguir."},
+          urgente:{t:"Guía urgente — Aliado",c:"Equipo,\n\nLa guía aún presenta novedad con la transportadora. Solicitamos validar urgentemente qué sucedió con el envío para poder informar al cliente.\n\nEstaremos atentos."},
+          ultimatum:{t:"Ultimátum guía — Aliado",c:"Equipo,\n\nAún no tenemos respuesta sobre el envío del producto.\n\nPor favor indiquen:\n¿Van a realizar el envío?\nO ¿procederán con la cancelación?\n\nNecesitamos definición urgente."}
+        },
+        cancelacion:{
+          normal:{t:"Seguimiento cancelación — Aliado",c:"¡Hola, equipo!\n\nEstamos dando seguimiento al proceso y solicitamos su colaboración para proceder con la cancelación de la compra. Tan pronto se realice, notifíquennos para informar al cliente.\n\nEstaremos atentos al paso a seguir."},
+          urgente:{t:"Cancelación urgente — Aliado",c:"Equipo,\n\nLa cancelación es la prioridad absoluta. Solicitamos agilizar el proceso de anulación hoy mismo. Necesitamos el soporte para confirmar al cliente que su solicitud fue resuelta."},
+          ultimatum:{t:"Ultimátum cancelación — Aliado",c:"Equipo,\n\nSolicitamos informarnos de inmediato si hay algún bloqueo para la anulación. De ser así, procedan a notificarnos hoy para hacer la cancelación interna. El cliente ya ha esperado lo suficiente."}
+        },
+        factura:{
+          normal:{t:"Seguimiento factura — Aliado",c:"¡Hola Equipo!\n\nNos gustaría hacer un seguimiento sobre la solicitud de la factura de compra para poder dar respuesta a nuestro cliente.\n\nEstaremos atentos al paso a seguir."},
+          urgente:{t:"Factura pendiente — Aliado",c:"¡Hola Equipo!\n\nNos encontramos a la espera de la factura de compra para finalizar el proceso. ¿Nos podrían compartir el PDF de la factura?\n\nEstaremos atentos."},
+          ultimatum:{t:"Ultimátum factura — Aliado",c:"Equipo,\n\nHasta la fecha no hemos recibido la factura solicitada. El cliente espera una solución. Solicitamos respuesta inmediata."}
+        },
+        direccion:{
+          normal:{t:"Seguimiento cambio dirección — Aliado",c:"¡Hola Equipo!\n\nNos gustaría hacer un seguimiento sobre el estado de la solicitud de cambio de dirección. ¿Podrían confirmarnos si fue procesada correctamente?\n\nEstaremos atentos al paso a seguir."},
+          urgente:{t:"Confirmar dirección urgente — Aliado",c:"Hola equipo,\n\n¿Nos pueden confirmar si el cambio de dirección ya quedó registrado en su sistema? Necesitamos esta validación para dar cierre al caso."},
+          ultimatum:{t:"Ultimátum dirección — Aliado",c:"Equipo,\n\nHasta la fecha no hemos recibido confirmación sobre el cambio de dirección. Necesitamos respuesta urgente."}
+        },
+        devolucion:{
+          normal:{t:"Datos devolución — Aliado",c:"¡Hola Equipo!\n\nSolicitamos urgentemente su colaboración compartiendo los datos completos para la devolución del producto. Necesitamos esta información para coordinar la logística.\n\nEstaremos atentos al paso a seguir."},
+          urgente:{t:"Datos devolución urgente — Aliado",c:"Equipo,\n\nSolicitamos apoyo inmediato para compartir los datos de devolución. Necesitamos coordinar la logística hoy mismo."},
+          ultimatum:{t:"Ultimátum devolución — Aliado",c:"Equipo,\n\nHasta la fecha no hemos recibido los datos de devolución. Esto está impidiendo resolver el caso. Solicitamos respuesta inmediata."}
+        },
+        rechazo:{
+          normal:{t:"Documento formal de rechazo — Aliado",c:"¡Hola Equipo!\n\nEntendemos las razones comunicadas; sin embargo, para transmitir esta decisión de manera transparente, es indispensable contar con un documento formal que detalle las causas del rechazo.\n\nAgradecemos de antemano su colaboración."},
+          urgente:{t:"Documento rechazo urgente — Aliado",c:"Equipo,\n\nSeguimos pendientes del documento formal del rechazo. Sin este soporte no podemos comunicar la decisión al cliente. Solicitamos envío a la mayor brevedad."},
+          ultimatum:{t:"Ultimátum documento rechazo — Aliado",c:"Equipo,\n\nHasta la fecha no hemos recibido el documento formal de rechazo. Sin este soporte no es posible dar cierre al caso. Solicitamos respuesta inmediata."}
+        },
+        ley1480:{
+          normal:{t:"Garantía sin empaque (Ley 1480) — Aliado",c:"¡Hola equipo!\n\nLes informamos que según la Ley 1480 de 2011 (Estatuto del Consumidor), no es necesario exigir al cliente la caja, empaque original o factura física para hacer efectiva una garantía legal.\n\nLa SIC ha reiterado que el vendedor debe contar con el registro de compra en sus bases de datos. Condicionar el servicio técnico al empaque es una práctica improcedente.\n\nQuedamos atentos a la confirmación para avanzar con la solución del cliente."},
+          urgente:{t:"Ley 1480 — urgente",c:"¡Hola equipo!\n\nRetomamos el recordatorio: la Ley 1480 de 2011 no permite exigir empaque original para la garantía. El cliente tiene derecho y necesitamos avanzar a la mayor brevedad.\n\nQuedamos atentos."},
+          ultimatum:{t:"Ley 1480 — Ultimátum",c:"Equipo,\n\nHemos reiterado que la Ley 1480 no permite condicionar la garantía al empaque. Solicitamos definición inmediata para evitar posibles sanciones ante la SIC.\n\nNecesitamos respuesta hoy."}
+        },
+        detener:{
+          normal:{t:"Detener despacho — Aliado",c:"Equipo,\n\nPor favor detengan inmediatamente el despacho de esta orden. Quedamos pendientes de la confirmación para continuar con la novedad y mantener informado al cliente."},
+          urgente:{t:"Detener despacho urgente — Aliado",c:"Equipo,\n\nSOLICITAMOS URGENTE: Detengan de inmediato el despacho de esta orden. El cliente indicó que no desea continuar con la compra. Confirmen recepción a la mayor brevedad."},
+          ultimatum:{t:"Detener despacho — Crítico",c:"Equipo,\n\nEs CRÍTICO detener el despacho de esta orden de manera inmediata. El cliente manifestó formalmente que no desea continuar. Necesitamos confirmación urgente."}
+        },
+        retracto_detener:{
+          normal:{t:"Retener envío por retracto — Aliado",c:"Equipo,\n\nSolicitamos apoyo inmediato para detener y retener el envío relacionado con la guía mencionada. El cliente manifestó formalmente que no desea continuar con la compra.\n\nEstamos atentos a los avances."},
+          urgente:{t:"Retracto — Retener envío urgente",c:"Equipo,\n\nSOLICITAMOS URGENTE retener el envío. El cliente ejerció su derecho de retracto. Por favor confirmen que el envío ha sido detenido."},
+          ultimatum:{t:"Retracto — Ultimátum retención",c:"Equipo,\n\nSeguimos sin confirmación de retención del envío por retracto. Si el producto es entregado en contra de la voluntad del cliente, deberán asumir los costos. Necesitamos confirmación inmediata."}
+        }
+      }
+    },
+    cierre:{
+      motivos:[
+        {val:"general",label:"Cierre general — Cliente informado"},
+        {val:"cancelacion_interna",label:"Cancelación interna Addi"},
+        {val:"entrega_efectiva",label:"Entrega efectiva confirmada"},
+        {val:"sin_respuesta_cliente",label:"Sin respuesta del cliente"},
+        {val:"cliente_desiste",label:"Cliente desiste del escalamiento"},
+        {val:"cancelacion_confirmada",label:"Cancelación confirmada al cliente"},
+        {val:"aliado_cliente_contacto",label:"Aliado y cliente en contacto directo"}
+      ],
+      urgencia:false,
+      p:{
+        general:{t:"Cierre general — Aliado",c:"¡Hola Equipo!\n\nHemos compartido la información con el cliente y damos por cerrado el proceso. Si necesitamos información adicional, nos pondremos en contacto.\n\nNo es necesario contestar este correo."},
+        cancelacion_interna:{t:"Cierre cancelación interna — Aliado",c:"¡Hola Equipo!\n\nRealizaremos la cancelación de la compra de manera interna y damos por cerrado el caso. Si necesitamos información adicional, nos pondremos en contacto.\n\nNo es necesario contestar este correo."},
+        entrega_efectiva:{t:"Cierre entrega efectiva — Aliado",c:"¡Hola Equipo!\n\nHemos evidenciado que la entrega se realizó de manera efectiva y damos por cerrado el caso.\n\nNo es necesario contestar este correo."},
+        sin_respuesta_cliente:{t:"Cierre sin respuesta cliente — Aliado",c:"¡Hola Equipo!\n\nHasta el momento no hemos recibido respuesta del cliente; por lo tanto, procederemos con el cierre del caso. En caso de novedad posterior, se la comunicaremos.\n\nNo es necesario contestar este correo."},
+        cliente_desiste:{t:"Cierre cliente desiste — Aliado",c:"¡Hola Equipo!\n\nHemos confirmado con el cliente que ya no desea continuar con la novedad y damos por cerrado el caso.\n\nNo es necesario contestar este correo."},
+        cancelacion_confirmada:{t:"Cierre cancelación confirmada — Aliado",c:"¡Hola Equipo!\n\nYa hemos compartido con el cliente la confirmación de la cancelación, debidamente reflejada en el sistema. Damos por cerrado el caso.\n\nNo es necesario contestar este correo."},
+        aliado_cliente_contacto:{t:"Cierre aliado y cliente en contacto — Aliado",c:"¡Hola Equipo!\n\nDado que cuentan con comunicación directa con el cliente, procederemos con el cierre de este caso. Si no se brinda solución, el caso se reabrirá.\n\nNo es necesario contestar este correo."}
+      }
+    }
+  },
+  cliente:{
+    push:{
+      motivos:[
+        {val:"general",label:"Seguimiento general"},
+        {val:"info_transmitida",label:"Información transmitida al aliado"},
+        {val:"confirmacion_envio",label:"Confirmar envío del producto"},
+        {val:"direccion_fallida",label:"Dirección de entrega fallida"},
+        {val:"retracto_no_recibir",label:"Retracto — No recibir el paquete"},
+        {val:"confirmacion_recibo",label:"Confirmación de recibo del producto"},
+        {val:"envio_devuelto",label:"Envío devuelto — Reenvío o cancelación"}
+      ],
+      urgencia:true,
+      p:{
+        general:{
+          normal:{t:"Seguimiento general — Cliente",c:"¡Hola [xxx]!\n\nEs un gusto saludarte. Te escribimos de Addi Marketplace para informarte que seguimos trabajando en tu caso. En cuanto tengamos una actualización, te notificaremos de inmediato.\n\nSi tienes alguna novedad o pregunta, no dudes en escribirnos. Estamos aquí para ayudarte."},
+          urgente:{t:"Seguimiento urgente — Cliente",c:"¡Hola [xxx]!\n\nEs un gusto saludarte. Seguimos pendientes de tu caso y necesitamos tu respuesta para continuar con la gestión. Por favor comunícate con nosotros a la mayor brevedad."},
+          ultimatum:{t:"Último aviso — Cliente",c:"¡Hola [xxx]!\n\nEs un gusto saludarte. Hemos intentado comunicarnos contigo sin éxito. De no recibir respuesta en las próximas horas, procederemos con el cierre administrativo de tu caso. Recuerda que siempre puedes volver a contactarnos si lo necesitas."}
+        },
+        info_transmitida:{
+          normal:{t:"Info transmitida al aliado — Cliente",c:"¡Hola [xxx]!\n\nEs un gusto saludarte. Seguimos trabajando en tu caso y agradecemos la información que nos compartiste; ya se la hicimos llegar a nuestro aliado para continuar con tu solicitud.\n\nEn cuanto tengamos información te estaremos notificando."},
+          urgente:{t:"Info transmitida urgente — Cliente",c:"¡Hola [xxx]!\n\nYa transmitimos tu información al aliado y seguimos esperando su respuesta. Te notificaremos en cuanto tengamos novedades. Agradecemos tu paciencia."},
+          ultimatum:{t:"Info transmitida — último aviso",c:"¡Hola [xxx]!\n\nHemos transmitido tu información al aliado pero aún no tenemos respuesta definitiva. Te informaremos el resultado final de tu caso en breve."}
+        },
+        confirmacion_envio:{
+          normal:{t:"Confirmar envío — Cliente",c:"¡Hola [xxx]!\n\nEs un gusto saludarte. Nos gustaría saber si ya pudiste realizar el envío del producto para continuar con el proceso. Te agradeceríamos mucho si nos confirmas.\n\nEsperamos tu respuesta."},
+          urgente:{t:"Confirmar envío urgente — Cliente",c:"¡Hola [xxx]!\n\nNecesitamos urgentemente la confirmación del envío del producto para continuar con tu caso. Por favor comparte el número de guía a la mayor brevedad."},
+          ultimatum:{t:"Confirmar envío — último aviso",c:"¡Hola [xxx]!\n\nHemos intentado comunicarnos contigo sin éxito. Sin la confirmación del envío no podemos continuar con tu caso. Por favor respóndenos a la mayor brevedad."}
+        },
+        direccion_fallida:{
+          normal:{t:"Dirección fallida — Cliente",c:"¡Hola [xxx]!\n\nEs un gusto saludarte. Nuestro aliado nos informa que no fue posible realizar la entrega de tu pedido. Por favor ayúdanos confirmando:\n\n📍 Dirección exacta\n🏢 Barrio / Punto de referencia\n📞 Número de contacto\n\nQuedamos muy atentos a tu respuesta."},
+          urgente:{t:"Dirección fallida urgente — Cliente",c:"¡Hola [xxx]!\n\nNecesitamos urgentemente tu dirección correcta para coordinar la re-entrega. Por favor respóndenos hoy:\n\n📍 Dirección exacta\n🏢 Barrio / Punto de referencia\n📞 Número de contacto"},
+          ultimatum:{t:"Dirección — último aviso",c:"¡Hola [xxx]!\n\nHemos intentado contactarte sin éxito para confirmar tu dirección. De no recibir respuesta, el pedido será devuelto al aliado."}
+        },
+        retracto_no_recibir:{
+          normal:{t:"Retracto — No recibir el paquete",c:"¡Hola [xxx]!\n\nEn seguimiento a tu solicitud, te informamos que el pedido fue despachado con la guía No. [xxx] de la transportadora [xxx]. Te solicitamos no recibir el paquete para que sea devuelto y podamos proceder con la cancelación por retracto.\n\nQuedamos atentos a la confirmación."},
+          urgente:{t:"Retracto urgente — No recibir",c:"¡Hola [xxx]!\n\nEs urgente que no recibas el paquete con guía [xxx] de [xxx]. Por favor recházalo en la puerta. Confírmanos cuando lo hayas rechazado."},
+          ultimatum:{t:"Retracto — último aviso",c:"¡Hola [xxx]!\n\nSeguimos sin confirmación sobre el rechazo del paquete. Es fundamental que no recibas el producto para continuar con tu cancelación. Por favor respóndenos a la mayor brevedad."}
+        },
+        confirmacion_recibo:{
+          normal:{t:"Confirmar recibo — Cliente",c:"¡Hola [xxx]!\n\nEs un gusto saludarte. Hemos intentado comunicarnos contigo sin éxito. ¿Podrías confirmarnos si ya recibiste el producto [xxx]? Agradecemos tu confirmación para dar cierre al proceso."},
+          urgente:{t:"Confirmar recibo urgente — Cliente",c:"¡Hola [xxx]!\n\nNecesitamos urgentemente que confirmes si ya recibiste el producto [xxx]. Esta confirmación es fundamental para el cierre de tu caso."},
+          ultimatum:{t:"Confirmar recibo — último aviso",c:"¡Hola [xxx]!\n\nHemos intentado comunicarnos en varias ocasiones sin éxito. De no recibir respuesta, procederemos con el cierre administrativo del caso."}
+        },
+        envio_devuelto:{
+          normal:{t:"Envío devuelto — Decisión",c:"¡Hola [xxx]!\n\nEs un gusto saludarte. Tu envío fue devuelto a nuestro aliado debido a un error en la dirección registrada. ¿Deseas un nuevo envío o prefieres cancelar la compra? En caso de reenvío, el costo sería de $[xxx].\n\nQuedamos atentos a tu decisión."},
+          urgente:{t:"Envío devuelto urgente — Cliente",c:"¡Hola [xxx]!\n\nTu envío fue devuelto al aliado. Necesitamos que nos indiques: ¿reenvío ($[xxx]) o cancelación? Por favor respóndenos hoy para proceder."},
+          ultimatum:{t:"Envío devuelto — último aviso",c:"¡Hola [xxx]!\n\nHemos intentado contactarte sin éxito sobre tu envío devuelto. De no recibir respuesta hoy, procederemos con la cancelación de tu compra."}
+        }
+      }
+    },
+    cierre:{
+      motivos:[
+        {val:"cancelacion_recoleccion",label:"Cancelación confirmada + recolección"},
+        {val:"cambio_direccion_exitoso",label:"Cambio de dirección exitoso"},
+        {val:"reembolso_confirmado",label:"Reembolso confirmado"},
+        {val:"producto_faltante",label:"Producto faltante entregado"},
+        {val:"cancelacion_sin_stock",label:"Cancelación por aliado sin stock"},
+        {val:"cierre_exitoso",label:"Cierre exitoso — producto recibido"}
+      ],
+      urgencia:false,
+      p:{
+        cancelacion_recoleccion:{t:"Cancelación + recolección — Cliente",c:"¡Gracias por confirmar la cancelación de tu compra! Estamos generando la novedad internamente y en un plazo de 3 a 5 días hábiles verás reflejada la cancelación.\n\nEl aliado se pondrá en contacto para coordinar la recolección del producto. Desde Addi no gestionamos este proceso directamente."},
+        cambio_direccion_exitoso:{t:"Cambio dirección exitoso — Cliente",c:"¡Hola [xxx]!\n\nEs un gusto saludarte. Nuestro aliado confirmó que el cambio de dirección se realizó de manera exitosa. En los próximos días podrás visualizar el número de guía.\n\nSi tienes alguna duda, estamos aquí para ayudarte."},
+        reembolso_confirmado:{t:"Reembolso confirmado — Cliente",c:"¡Hola [xxx]!\n\nEs un gusto saludarte. Te confirmamos que se generó la solicitud de reembolso, el cual verás reflejado en un promedio de 7 a 15 días hábiles.\n\n¡Estamos para ayudarte!"},
+        producto_faltante:{t:"Producto faltante entregado — Cliente",c:"¡Hola [xxx]!\n\nEs un gusto saludarte. Nuestro aliado confirmó la entrega del producto faltante de tu compra. En caso de que esta información no coincida, escríbenos de inmediato."},
+        cancelacion_sin_stock:{t:"Cancelación por sin stock — Cliente",c:"¡Hola [xxx]!\n\nLamentamos las novedades presentadas. Nuestro aliado confirmó la cancelación de tu pedido ya que no cuentan con stock disponible.\n\nEstamos aquí para ayudarte si tienes alguna pregunta."},
+        cierre_exitoso:{t:"Cierre exitoso — Cliente",c:"¡Hola [xxx]!\n\nEsperamos sinceramente que ya tengas tu producto y lo estés disfrutando. Recuerda que si presentas alguna nueva solicitud, puedes comunicarte con nosotros nuevamente.\n\n¡Gracias por tu compra!"}
+      }
+    }
+  }
+};
+
+let redState = {dest:null, gest:null, motivo:null, urg:null};
+
+function redOnDest(val, lbl){
+  redState = {dest:val, gest:null, motivo:null, urg:null};
+  document.querySelectorAll('[name=r-dest]').forEach(r=>r.closest('.radio-label').classList.remove('sel'));
+  lbl.classList.add('sel');
+  lbl.querySelector('input').checked = true;
+  document.getElementById('red-gest-zone').classList.remove('hidden');
+  document.getElementById('red-motivo-zone').classList.add('hidden');
+  document.getElementById('red-urg-zone').classList.add('hidden');
+  document.getElementById('red-resultado').classList.add('hidden');
+  document.querySelectorAll('[name=r-gest],[name=r-urg]').forEach(r=>{
+    r.checked=false; r.closest('.radio-label').classList.remove('sel','sel-warn','sel-red');
+  });
+}
+
+function redOnGest(val, lbl){
+  redState.gest = val; redState.motivo = null; redState.urg = null;
+  document.querySelectorAll('[name=r-gest]').forEach(r=>r.closest('.radio-label').classList.remove('sel','sel-warn'));
+  lbl.classList.add('sel'); lbl.querySelector('input').checked = true;
+  // poblar motivos
+  const sel = document.getElementById('red-motivo');
+  sel.innerHTML = '<option value="" disabled selected>Selecciona el motivo...</option>';
+  RED_DB[redState.dest][val].motivos.forEach(m=>{
+    const o = document.createElement('option'); o.value=m.val; o.textContent=m.label; sel.appendChild(o);
+  });
+  document.getElementById('red-motivo-zone').classList.remove('hidden');
+  document.getElementById('red-urg-zone').classList.add('hidden');
+  document.getElementById('red-resultado').classList.add('hidden');
+}
+
+function redOnMotivo(val){
+  if(!val) return;
+  redState.motivo = val; redState.urg = null;
+  document.getElementById('red-resultado').classList.add('hidden');
+  document.querySelectorAll('[name=r-urg]').forEach(r=>{r.checked=false; r.closest('.radio-label').classList.remove('sel','sel-warn','sel-red');});
+  const tieneUrg = RED_DB[redState.dest][redState.gest].urgencia;
+  if(tieneUrg){
+    document.getElementById('red-urg-zone').classList.remove('hidden');
+  } else {
+    document.getElementById('red-urg-zone').classList.add('hidden');
+    redMostrar();
+  }
+}
+
+function redOnUrg(val, lbl){
+  redState.urg = val;
+  document.querySelectorAll('[name=r-urg]').forEach(r=>r.closest('.radio-label').classList.remove('sel','sel-warn','sel-red'));
+  const cls = val==='normal'?'sel':val==='urgente'?'sel-warn':'sel-red';
+  lbl.classList.add(cls); lbl.querySelector('input').checked = true;
+  redMostrar();
+}
+
+function redMostrar(){
+  const {dest, gest, motivo, urg} = redState;
+  if(!dest||!gest||!motivo) return;
+  const cfg = RED_DB[dest][gest];
+  let plantilla;
+  if(cfg.urgencia){
+    if(!urg) return;
+    plantilla = cfg.p[motivo]?.[urg];
+  } else {
+    plantilla = cfg.p[motivo];
+  }
+  if(!plantilla) return;
+
+  const zona = document.getElementById('red-resultado');
+  zona.innerHTML = `
+    <div class="result-box fade">
+      <div class="result-header">
+        <h3 style="color:var(--text);font-size:15px;display:flex;align-items:center;gap:8px">
+          <i data-lucide="mail" width="18" style="color:var(--blue)"></i>
+          ${plantilla.t}
+        </h3>
+        <button class="btn-copy" onclick="redCopiar()">
+          <i data-lucide="copy" width="14"></i> Copiar
+        </button>
+      </div>
+      <div class="email-body" id="red-email-body">${fmtVars(plantilla.c)}</div>
+      <div class="hint">
+        <i data-lucide="info" width="12"></i>
+        Los textos entre corchetes <strong>[xxx]</strong> debes reemplazarlos antes de enviar.
+      </div>
+    </div>`;
+  zona.classList.remove('hidden');
+  icons();
+}
+
+function redCopiar(){
+  const el = document.getElementById('red-email-body');
+  if(!el) return;
+  const txt = el.innerText;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn = document.querySelector('#red-resultado .btn-copy');
+    if(!btn) return;
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<i data-lucide="check" width="14"></i> ¡Copiado!';
+    btn.style.background='var(--green)'; btn.style.color='#000'; btn.style.borderColor='var(--green)';
+    icons();
+    setTimeout(()=>{ btn.innerHTML=orig; btn.style.background=''; btn.style.color=''; btn.style.borderColor=''; icons(); },2000);
+  });
+}
+</script>
+</body>
+</html>
