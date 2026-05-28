@@ -1,82 +1,413 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Addi | Toolkit Expert N2</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
+/* ─── DESIGN TOKENS ──────────────────────────────── */
 :root {
-  --bg:#09090B; --card:#18181B; --input:#27272A; --border:#3F3F46;
-  --text:#F4F4F5; --muted:#A1A1AA; --cyan:#00D4FF; --blue:#0077FF;
-  --green:#4ADE80; --yellow:#F59E0B; --red:#F87171; --purple:#A855F7;
-  --purplebg:rgba(168,85,247,0.08); --cyanbg:rgba(0,212,255,0.08);
+  --addi-blue:#1C67D8;
+  --addi-blue-light:#EEF4FF;
+  --addi-blue-mid:#DCEAFF;
+  --addi-teal:#86FEF5;
+  --addi-teal-dark:#00C4B8;
+  --addi-orange:#FF8F43;
+  --addi-black:#111111;
+  --addi-gray:#E6E6E6;
+  --addi-white:#FFFFFF;
 }
+
+[data-theme="light"] {
+  --bg:#F5F7FB;
+  --surface:#FFFFFF;
+  --surface2:#F0F4FF;
+  --border:#E2E8F5;
+  --border2:#C8D8F5;
+  --text:#111827;
+  --text2:#374151;
+  --muted:#6B7280;
+  --input:#F8FAFF;
+  --primary:var(--addi-blue);
+  --primary-bg:var(--addi-blue-light);
+  --primary-border:var(--addi-blue-mid);
+  --accent:var(--addi-teal);
+  --accent-dark:var(--addi-teal-dark);
+  --warn:#F59E0B;
+  --warn-bg:#FFFBEB;
+  --danger:#EF4444;
+  --danger-bg:#FEF2F2;
+  --success:#10B981;
+  --success-bg:#ECFDF5;
+  --shadow:0 1px 3px rgba(28,103,216,0.08),0 4px 16px rgba(28,103,216,0.06);
+  --shadow-lg:0 4px 24px rgba(28,103,216,0.12),0 1px 4px rgba(28,103,216,0.08);
+  --toggle-bg:#E2E8F5;
+  --toggle-icon:var(--muted);
+}
+
+[data-theme="dark"] {
+  --bg:#0A0F1E;
+  --surface:#111827;
+  --surface2:#1A2235;
+  --border:#1E2D4A;
+  --border2:#2A3F6A;
+  --text:#F1F5F9;
+  --text2:#CBD5E1;
+  --muted:#64748B;
+  --input:#0F1929;
+  --primary:#4D8EF5;
+  --primary-bg:rgba(77,142,245,0.1);
+  --primary-border:rgba(77,142,245,0.25);
+  --accent:#86FEF5;
+  --accent-dark:#00C4B8;
+  --warn:#F59E0B;
+  --warn-bg:rgba(245,158,11,0.1);
+  --danger:#F87171;
+  --danger-bg:rgba(248,113,113,0.1);
+  --success:#34D399;
+  --success-bg:rgba(52,211,153,0.1);
+  --shadow:0 1px 3px rgba(0,0,0,0.3),0 4px 16px rgba(0,0,0,0.2);
+  --shadow-lg:0 4px 24px rgba(0,0,0,0.4),0 1px 4px rgba(0,0,0,0.2);
+  --toggle-bg:#1E2D4A;
+  --toggle-icon:#64748B;
+}
+
+/* ─── RESET ──────────────────────────────────────── */
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:20px}
-.app{max-width:860px;margin:0 auto}
-.header{display:flex;align-items:center;gap:12px;margin-bottom:28px}
-.logo{font-size:22px;font-weight:800;color:var(--cyan)}
-.logo span{color:var(--text)}
-.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:24px;gap:4px}
-.tab-btn{background:none;border:none;color:var(--muted);padding:10px 18px;cursor:pointer;font-size:14px;font-weight:500;border-bottom:2px solid transparent;transition:all .2s;display:flex;align-items:center;gap:6px}
-.tab-btn:hover{color:var(--text)}
-.tab-btn.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  transition:background .3s,color .3s;
+}
+
+/* ─── LAYOUT ─────────────────────────────────────── */
+.app{max-width:900px;margin:0 auto;padding:24px 20px 60px}
+
+/* ─── HEADER ─────────────────────────────────────── */
+.header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:32px;
+  padding:20px 24px;
+  background:var(--surface);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  border:1px solid var(--border);
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-logo{
+  width:40px;height:40px;background:var(--addi-blue);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:900;color:#fff;letter-spacing:-1px;
+}
+.brand-name{font-size:20px;font-weight:800;color:var(--text)}
+.brand-name span{color:var(--primary)}
+.brand-badge{
+  font-size:10px;font-weight:700;
+  background:var(--primary-bg);color:var(--primary);
+  padding:3px 8px;border-radius:20px;letter-spacing:.5px;
+  border:1px solid var(--primary-border);
+}
+.header-right{display:flex;align-items:center;gap:10px}
+
+/* Theme toggle */
+.theme-toggle{
+  width:42px;height:24px;background:var(--toggle-bg);
+  border-radius:12px;cursor:pointer;border:none;
+  position:relative;transition:background .3s;
+  display:flex;align-items:center;padding:3px;
+}
+.theme-toggle::after{
+  content:'';width:18px;height:18px;background:var(--surface);
+  border-radius:50%;transition:transform .3s;
+  box-shadow:0 1px 3px rgba(0,0,0,0.2);
+}
+[data-theme="dark"] .theme-toggle::after{transform:translateX(18px)}
+[data-theme="dark"] .theme-toggle{background:var(--primary)}
+.toggle-icons{display:flex;gap:6px;align-items:center;font-size:12px}
+.toggle-label{font-size:12px;font-weight:600;color:var(--muted)}
+
+/* ─── TABS ───────────────────────────────────────── */
+.tabs{
+  display:flex;gap:4px;
+  background:var(--surface);
+  border-radius:14px;
+  padding:5px;
+  margin-bottom:20px;
+  box-shadow:var(--shadow);
+  border:1px solid var(--border);
+}
+.tab-btn{
+  flex:1;background:none;border:none;
+  color:var(--muted);padding:10px 16px;
+  cursor:pointer;font-size:14px;font-weight:600;
+  border-radius:10px;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  font-family:'Outfit',sans-serif;
+}
+.tab-btn:hover{color:var(--text);background:var(--surface2)}
+.tab-btn.active{
+  background:var(--addi-blue);color:#fff;
+  box-shadow:0 2px 8px rgba(28,103,216,0.3);
+}
+[data-theme="dark"] .tab-btn.active{background:var(--primary)}
 .tab{display:none}.tab.active{display:block}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
-.label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
-select,input{width:100%;background:var(--input);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 14px;font-size:14px;font-family:inherit;outline:none;transition:border .2s}
-select:focus,input:focus{border-color:var(--cyan)}
-.radio-grid{display:grid;gap:10px;margin-top:6px}
-.radio-grid.cols2{grid-template-columns:1fr 1fr}
-.radio-grid.cols3{grid-template-columns:1fr 1fr 1fr}
-.radio-label{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--input);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;color:var(--muted);transition:all .2s;user-select:none}
-.radio-label:hover{border-color:var(--cyan);color:var(--text)}
-.radio-label.sel{border-color:var(--cyan);background:var(--cyanbg);color:var(--text)}
-.radio-label.sel-warn{border-color:var(--yellow);background:rgba(245,158,11,.08);color:var(--text)}
-.radio-label.sel-red{border-color:var(--red);background:rgba(248,113,113,.08);color:var(--text)}
-.radio-label input[type=radio]{accent-color:var(--cyan);width:16px;height:16px;flex-shrink:0}
-.radio-col{flex-direction:column;text-align:center;gap:6px;justify-content:center}
-.btn-primary{width:100%;padding:14px;background:var(--blue);border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .2s;font-family:inherit}
-.btn-primary:hover{opacity:.85}
-.btn-primary:disabled{opacity:.4;cursor:not-allowed}
-.btn-copy{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);border-radius:8px;color:var(--cyan);padding:8px 14px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:inherit;transition:all .2s;white-space:nowrap}
-.btn-copy:hover{background:rgba(0,212,255,.2)}
-.result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.email-body{background:var(--input);border:1px solid var(--border);border-radius:8px;padding:16px;font-size:14px;line-height:1.8;white-space:pre-wrap}
-.var-highlight{background:rgba(0,119,255,.15);color:#60A5FA;border-radius:4px;padding:1px 4px;font-weight:600}
-.hint{font-size:12px;color:var(--yellow);margin-top:10px;display:flex;align-items:center;gap:4px}
-.result-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-top:20px}
+
+/* ─── CARDS ──────────────────────────────────────── */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:20px;
+  margin-bottom:14px;
+  box-shadow:var(--shadow);
+  transition:border-color .2s;
+}
+.card:focus-within{border-color:var(--primary)}
+
+/* ─── LABELS ─────────────────────────────────────── */
+.field-label{
+  font-size:11px;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.7px;
+  margin-bottom:10px;display:flex;align-items:center;gap:6px;
+}
+.field-label svg{color:var(--primary)}
+
+/* ─── INPUTS ─────────────────────────────────────── */
+select{
+  width:100%;background:var(--input);
+  border:1.5px solid var(--border);border-radius:10px;
+  color:var(--text);padding:11px 14px;
+  font-size:14px;font-weight:500;font-family:'Outfit',sans-serif;
+  outline:none;transition:border .2s,box-shadow .2s;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;
+  padding-right:36px;cursor:pointer;
+}
+select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(28,103,216,0.1)}
+[data-theme="dark"] select:focus{box-shadow:0 0 0 3px rgba(77,142,245,0.15)}
+
+/* ─── RADIO PILLS ────────────────────────────────── */
+.radio-grid{display:grid;gap:8px;margin-top:6px}
+.cols2{grid-template-columns:1fr 1fr}
+.cols3{grid-template-columns:1fr 1fr 1fr}
+.radio-pill{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;
+  background:var(--input);
+  border:1.5px solid var(--border);
+  border-radius:12px;cursor:pointer;
+  font-size:13px;font-weight:500;color:var(--muted);
+  transition:all .2s;user-select:none;
+  font-family:'Outfit',sans-serif;
+}
+.radio-pill:hover{border-color:var(--primary);color:var(--text);background:var(--primary-bg)}
+.radio-pill.sel{
+  border-color:var(--addi-blue);
+  background:var(--primary-bg);
+  color:var(--addi-blue);font-weight:600;
+}
+[data-theme="dark"] .radio-pill.sel{border-color:var(--primary);color:var(--primary)}
+.radio-pill.sel-warn{border-color:var(--warn);background:var(--warn-bg);color:var(--warn);font-weight:600}
+.radio-pill.sel-red{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);font-weight:600}
+.radio-pill input[type=radio]{accent-color:var(--primary);width:15px;height:15px;flex-shrink:0}
+.radio-col{flex-direction:column;text-align:center;gap:8px;justify-content:center;padding:14px 10px}
+.radio-col small{font-size:11px;color:var(--muted);font-weight:400}
+
+/* ─── BUTTONS ────────────────────────────────────── */
+.btn-primary{
+  width:100%;padding:14px 20px;
+  background:var(--addi-blue);
+  border:none;border-radius:12px;
+  color:#fff;font-size:15px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;
+  justify-content:center;gap:8px;
+  transition:all .2s;font-family:'Outfit',sans-serif;
+  box-shadow:0 4px 12px rgba(28,103,216,0.25);
+  margin-bottom:16px;
+}
+.btn-primary:hover{background:#1558C0;box-shadow:0 6px 20px rgba(28,103,216,0.35);transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(0)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none}
+[data-theme="dark"] .btn-primary{background:var(--primary);box-shadow:0 4px 12px rgba(77,142,245,0.2)}
+
+.btn-copy{
+  background:var(--primary-bg);
+  border:1.5px solid var(--primary-border);
+  border-radius:8px;color:var(--primary);
+  padding:8px 14px;font-size:13px;font-weight:600;
+  cursor:pointer;display:flex;align-items:center;gap:6px;
+  font-family:'Outfit',sans-serif;transition:all .2s;white-space:nowrap;
+}
+.btn-copy:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* ─── RESULT BOX ─────────────────────────────────── */
+.result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.result-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:16px;padding:24px;margin-top:16px;
+  box-shadow:var(--shadow-lg);
+}
+.result-card.blue{border-color:var(--primary-border);background:var(--primary-bg)}
+.result-card.warn{border-color:rgba(245,158,11,.3);background:var(--warn-bg)}
+.result-card.danger{border-color:rgba(239,68,68,.3);background:var(--danger-bg)}
+.result-card.success{border-color:rgba(16,185,129,.3);background:var(--success-bg)}
+
+/* ─── TIPIFICADOR — CASILLAS ─────────────────────── */
+.casillas{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+  margin:16px 0;
+}
+.casilla{
+  background:var(--surface);
+  border:1.5px solid var(--primary-border);
+  border-radius:12px;padding:14px;
+  position:relative;overflow:hidden;
+}
+.casilla::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--addi-blue),var(--addi-teal));
+}
+.casilla-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px}
+.casilla-value{font-size:13px;font-weight:700;color:var(--primary)}
+.casilla-empty{color:var(--muted);font-style:italic;font-weight:400}
+
+.nota-soporte{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:10px;padding:14px 16px;font-size:13px;
+  color:var(--text2);line-height:1.7;margin-top:12px;
+  display:flex;gap:10px;align-items:flex-start;
+}
+.nota-soporte svg{color:var(--primary);flex-shrink:0;margin-top:1px}
+
+/* ─── CHECKLIST ──────────────────────────────────── */
+.checklist-title{
+  font-size:12px;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.7px;
+  margin:20px 0 12px;padding-top:20px;
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;gap:6px;
+}
+.checklist-title svg{color:var(--success)}
+.check-list{display:flex;flex-direction:column;gap:8px}
+.check-item{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px 16px;background:var(--input);
+  border:1.5px solid var(--border);border-radius:10px;
+  cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);
+  transition:all .2s;user-select:none;line-height:1.5;
+  font-family:'Outfit',sans-serif;
+}
+.check-item:hover{border-color:var(--success);color:var(--text);background:var(--success-bg)}
+.check-item.done{
+  border-color:rgba(16,185,129,.4);background:var(--success-bg);
+  color:var(--success);text-decoration:line-through;opacity:.7;
+}
+.check-item input[type=checkbox]{accent-color:var(--success);width:16px;height:16px;flex-shrink:0;margin-top:1px}
+
+.banner-ok{
+  display:none;margin-top:14px;
+  padding:14px 18px;
+  background:linear-gradient(135deg,var(--success-bg),rgba(134,254,245,0.1));
+  border:1.5px solid rgba(16,185,129,.3);
+  border-radius:12px;color:var(--success);
+  font-weight:700;font-size:14px;
+  align-items:center;gap:10px;
+}
+.banner-ok svg{flex-shrink:0}
+
+/* ─── EMAIL BODY ─────────────────────────────────── */
+.email-body{
+  background:var(--input);border:1.5px solid var(--border);
+  border-radius:10px;padding:18px;
+  font-size:14px;line-height:1.9;white-space:pre-wrap;
+  color:var(--text2);font-weight:400;
+}
+.var-hl{
+  background:rgba(28,103,216,0.1);color:var(--primary);
+  border-radius:4px;padding:1px 5px;font-weight:700;
+  border:1px solid rgba(28,103,216,0.15);
+}
+[data-theme="dark"] .var-hl{background:rgba(77,142,245,0.15);color:var(--primary);border-color:rgba(77,142,245,0.2)}
+.hint{font-size:12px;color:var(--warn);margin-top:10px;display:flex;align-items:center;gap:5px;font-weight:500}
+
+/* ─── PILL BADGE ─────────────────────────────────── */
+.step-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;background:var(--primary);
+  border-radius:50%;color:#fff;font-size:11px;font-weight:800;flex-shrink:0;
+}
+[data-theme="dark"] .step-badge{background:var(--primary)}
+
+/* ─── INFO BOX FACTURA ───────────────────────────── */
+.info-box{
+  background:var(--primary-bg);border:1.5px solid var(--primary-border);
+  border-radius:12px;padding:16px 18px;
+  display:flex;gap:12px;align-items:flex-start;margin-bottom:4px;
+}
+.info-box svg{color:var(--primary);flex-shrink:0;margin-top:1px}
+.info-box-text{font-size:13px;line-height:1.7;color:var(--text2)}
+.info-box-title{font-size:14px;font-weight:700;color:var(--primary);margin-bottom:4px}
+
+/* ─── ABIERTO / GESTIÓN BOXES ────────────────────── */
+.open-box{
+  border-radius:12px;padding:16px 18px;
+  display:flex;gap:12px;align-items:flex-start;margin-bottom:4px;
+}
+.open-box.warn{background:var(--warn-bg);border:1.5px solid rgba(245,158,11,.3)}
+.open-box.danger{background:var(--danger-bg);border:1.5px solid rgba(239,68,68,.3)}
+.open-box svg{flex-shrink:0;margin-top:1px}
+.open-box.warn svg{color:var(--warn)}
+.open-box.danger svg{color:var(--danger)}
+.open-box-title{font-size:14px;font-weight:700;margin-bottom:4px}
+.open-box.warn .open-box-title{color:var(--warn)}
+.open-box.danger .open-box-title{color:var(--danger)}
+.open-box-text{font-size:13px;line-height:1.7;color:var(--text2)}
+
+/* ─── ANIMATIONS ─────────────────────────────────── */
+@keyframes slideUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:slideUp .25s ease}
+
+/* ─── HIDDEN ─────────────────────────────────────── */
 .hidden{display:none}
-/* Tipificador */
-.casillas{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin:16px 0}
-.casilla{background:var(--input);border:1px solid rgba(0,212,255,.25);border-radius:8px;padding:12px}
-.casilla-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
-.casilla-value{font-size:13px;font-weight:600;color:var(--cyan)}
-.casilla-empty{color:var(--muted);font-style:italic}
-.soporte{background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.15);border-radius:8px;padding:14px;margin-top:12px;font-size:13px;color:var(--muted);line-height:1.6}
-.soporte strong{color:var(--text)}
-.alerta-qa{background:rgba(248,113,113,.07);border:1.5px solid var(--red);border-radius:10px;padding:16px;color:var(--red)}
-.alerta-open{background:rgba(245,158,11,.07);border:1.5px solid var(--yellow);border-radius:10px;padding:16px;color:var(--yellow)}
-.check-list{display:flex;flex-direction:column;gap:10px;margin-top:16px}
-.check-item{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--input);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;color:var(--muted);transition:all .2s;user-select:none;line-height:1.5}
-.check-item:hover{border-color:var(--yellow);color:var(--text)}
-.check-item.done{border-color:rgba(74,222,128,.4);background:rgba(74,222,128,.05);color:var(--text);text-decoration:line-through;opacity:.7}
-.check-item input[type=checkbox]{accent-color:var(--green);width:16px;height:16px;flex-shrink:0;margin-top:1px}
-.banner-ok{display:none;margin-top:14px;padding:14px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.3);border-radius:10px;color:var(--green);font-weight:700;font-size:14px;align-items:center;gap:10px}
-.section-label{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
-@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-.fade{animation:fadeIn .3s ease}
+
+/* ─── SECTION DIVIDER ────────────────────────────── */
+.section-divider{
+  height:1px;background:var(--border);margin:20px 0;
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────── */
+@media(max-width:600px){
+  .casillas{grid-template-columns:1fr 1fr}
+  .cols3{grid-template-columns:1fr}
+  .header{padding:16px}
+  .brand-name{font-size:17px}
+}
 </style>
 </head>
 <body>
 <div class="app">
 
+  <!-- HEADER -->
   <div class="header">
-    <div class="logo">Addi <span>| Toolkit N2</span></div>
+    <div class="brand">
+      <div class="brand-logo">A</div>
+      <div>
+        <div class="brand-name">Addi <span>Toolkit</span></div>
+      </div>
+      <div class="brand-badge">N2 · Expert</div>
+    </div>
+    <div class="header-right">
+      <span class="toggle-label" id="toggle-label">☀️ Claro</span>
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Cambiar tema"></button>
+    </div>
   </div>
 
+  <!-- TABS -->
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('tipificador',this)">
       <i data-lucide="layout-template" width="16"></i> Tipificador QA
@@ -86,13 +417,15 @@ select:focus,input:focus{border-color:var(--cyan)}
     </button>
   </div>
 
-  <!-- ═══════════════════════════════════════ -->
-  <!-- TAB 1: TIPIFICADOR                      -->
-  <!-- ═══════════════════════════════════════ -->
+  <!-- ══════════════════════════════════════ -->
+  <!-- TAB 1: TIPIFICADOR                    -->
+  <!-- ══════════════════════════════════════ -->
   <div id="tab-tipificador" class="tab active">
 
     <div class="card">
-      <div class="label"><i data-lucide="folder-tree" width="14"></i> 1. Motivo del caso</div>
+      <div class="field-label">
+        <i data-lucide="folder-tree" width="14"></i> 1. Motivo del caso
+      </div>
       <select id="tip-motivo" onchange="tipOnMotivoChange()">
         <option value="" disabled selected>Selecciona el motivo de ingreso...</option>
         <optgroup label="Información del pedido">
@@ -125,7 +458,7 @@ select:focus,input:focus{border-color:var(--cyan)}
 
     <div id="tip-preguntas"></div>
 
-    <button class="btn-primary hidden" id="tip-btn" onclick="tipMostrarCierre()" style="margin-bottom:20px">
+    <button class="btn-primary hidden" id="tip-btn" onclick="tipMostrarCierre()">
       <i data-lucide="layout-template" width="18"></i> Mostrar tipificación de cierre
     </button>
 
@@ -133,63 +466,63 @@ select:focus,input:focus{border-color:var(--cyan)}
 
   </div>
 
-  <!-- ═══════════════════════════════════════ -->
-  <!-- TAB 2: REDACTOR                         -->
-  <!-- ═══════════════════════════════════════ -->
+  <!-- ══════════════════════════════════════ -->
+  <!-- TAB 2: REDACTOR                       -->
+  <!-- ══════════════════════════════════════ -->
   <div id="tab-redactor" class="tab">
 
     <div class="card">
-      <div class="label"><i data-lucide="users" width="14"></i> 1. ¿A quién vas a escribir?</div>
+      <div class="field-label"><i data-lucide="users" width="14"></i> 1. ¿A quién vas a escribir?</div>
       <div class="radio-grid cols2">
-        <label class="radio-label" onclick="redOnDest('aliado',this)">
+        <label class="radio-pill" onclick="redOnDest('aliado',this)">
           <input type="radio" name="r-dest" value="aliado">
-          <i data-lucide="building-2" width="16" style="color:var(--cyan)"></i> Al Aliado
+          <i data-lucide="building-2" width="16" style="color:var(--primary)"></i> Al Aliado
         </label>
-        <label class="radio-label" onclick="redOnDest('cliente',this)">
+        <label class="radio-pill" onclick="redOnDest('cliente',this)">
           <input type="radio" name="r-dest" value="cliente">
-          <i data-lucide="user" width="16" style="color:var(--green)"></i> Al Cliente
+          <i data-lucide="user" width="16" style="color:var(--success)"></i> Al Cliente
         </label>
       </div>
     </div>
 
     <div id="red-gest-zone" class="card hidden fade">
-      <div class="label"><i data-lucide="layers" width="14"></i> 2. ¿Qué tipo de gestión?</div>
+      <div class="field-label"><i data-lucide="layers" width="14"></i> 2. ¿Qué tipo de gestión?</div>
       <div class="radio-grid cols2">
-        <label class="radio-label" onclick="redOnGest('push',this)">
+        <label class="radio-pill" onclick="redOnGest('push',this)">
           <input type="radio" name="r-gest" value="push">
-          <i data-lucide="bell" width="16" style="color:var(--yellow)"></i> Seguimiento / Push
+          <i data-lucide="bell" width="16" style="color:var(--warn)"></i> Seguimiento / Push
         </label>
-        <label class="radio-label" onclick="redOnGest('cierre',this)">
+        <label class="radio-pill" onclick="redOnGest('cierre',this)">
           <input type="radio" name="r-gest" value="cierre">
-          <i data-lucide="check-circle" width="16" style="color:var(--green)"></i> Cierre del caso
+          <i data-lucide="check-circle" width="16" style="color:var(--success)"></i> Cierre del caso
         </label>
       </div>
     </div>
 
     <div id="red-motivo-zone" class="card hidden fade">
-      <div class="label"><i data-lucide="folder-tree" width="14"></i> 3. Motivo del caso</div>
+      <div class="field-label"><i data-lucide="folder-tree" width="14"></i> 3. Motivo del caso</div>
       <select id="red-motivo" onchange="redOnMotivo(this.value)">
         <option value="" disabled selected>Selecciona el motivo...</option>
       </select>
     </div>
 
     <div id="red-urg-zone" class="card hidden fade">
-      <div class="label"><i data-lucide="clock" width="14"></i> 4. ¿Cuántos días sin respuesta?</div>
+      <div class="field-label"><i data-lucide="clock" width="14"></i> 4. ¿Cuántos días sin respuesta?</div>
       <div class="radio-grid cols3">
-        <label class="radio-label radio-col" onclick="redOnUrg('normal',this)">
+        <label class="radio-pill radio-col" onclick="redOnUrg('normal',this)">
           <input type="radio" name="r-urg" value="normal">
-          <i data-lucide="smile" width="18" style="color:var(--green)"></i>
-          <span>Normal<br><small style="color:var(--muted)">1-4 días</small></span>
+          <i data-lucide="smile" width="20" style="color:var(--success)"></i>
+          <span>Normal<br><small>1-4 días</small></span>
         </label>
-        <label class="radio-label radio-col sel-warn" onclick="redOnUrg('urgente',this)">
+        <label class="radio-pill radio-col" onclick="redOnUrg('urgente',this)">
           <input type="radio" name="r-urg" value="urgente">
-          <i data-lucide="alert-triangle" width="18" style="color:var(--yellow)"></i>
-          <span>Urgente<br><small style="color:var(--muted)">Cerca del límite</small></span>
+          <i data-lucide="alert-triangle" width="20" style="color:var(--warn)"></i>
+          <span>Urgente<br><small>Cerca del límite</small></span>
         </label>
-        <label class="radio-label radio-col" onclick="redOnUrg('ultimatum',this)">
+        <label class="radio-pill radio-col" onclick="redOnUrg('ultimatum',this)">
           <input type="radio" name="r-urg" value="ultimatum">
-          <i data-lucide="x-circle" width="18" style="color:var(--red)"></i>
-          <span>Ultimátum<br><small style="color:var(--muted)">Límite superado</small></span>
+          <i data-lucide="x-circle" width="20" style="color:var(--danger)"></i>
+          <span>Ultimátum<br><small>Límite superado</small></span>
         </label>
       </div>
     </div>
@@ -199,17 +532,34 @@ select:focus,input:focus{border-color:var(--cyan)}
   </div>
 
 </div>
-
 <script>
-// ═══════════════════════════════════════════════════════
-// UTILIDADES
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+// TEMA
+// ═══════════════════════════════════════════════════
+function toggleTheme(){
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme', isDark?'light':'dark');
+  document.getElementById('toggle-label').textContent = isDark?'☀️ Claro':'🌙 Oscuro';
+  localStorage.setItem('addi_theme', isDark?'light':'dark');
+}
+(function(){
+  const saved = localStorage.getItem('addi_theme')||'light';
+  document.documentElement.setAttribute('data-theme',saved);
+  document.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById('toggle-label').textContent = saved==='dark'?'🌙 Oscuro':'☀️ Claro';
+  });
+})();
+
+// ═══════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════
 function icons(){ if(typeof lucide!=='undefined') lucide.createIcons(); }
-document.addEventListener('DOMContentLoaded', ()=>{
-  const t = setInterval(()=>{ if(typeof lucide!=='undefined'){ lucide.createIcons(); clearInterval(t); } }, 50);
+document.addEventListener('DOMContentLoaded',()=>{
+  const t=setInterval(()=>{ if(typeof lucide!=='undefined'){ lucide.createIcons(); clearInterval(t); } },50);
 });
 
-function switchTab(name, btn){
+function switchTab(name,btn){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
@@ -217,14 +567,14 @@ function switchTab(name, btn){
 }
 
 function fmtVars(txt){
-  let s = txt.replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  s = s.replace(/\n/g,'<br>');
-  return s.replace(/\[([^\]]+)\]/g,"<span class='var-highlight'>[$1]</span>");
+  let s=txt.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  s=s.replace(/\n/g,'<br>');
+  return s.replace(/\[([^\]]+)\]/g,"<span class='var-hl'>[$1]</span>");
 }
 
-// ═══════════════════════════════════════════════════════
-// TIPIFICADOR — árbol de decisiones
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+// TIPIFICADOR
+// ═══════════════════════════════════════════════════
 const TIP_DB = {
   cancelacion_aliado:      {macro:"Cierre del caso MP",sub:"Sub Orden Cancelada",micro:"Cancelación por el aliado",esp:"",nota:"El aliado realizó la cancelación total del crédito en su sistema."},
   cancelacion_addi_7d:     {macro:"Cierre del caso MP",sub:"Sub Orden Cancelada",micro:"Cancelación Addi",esp:"Sin respuesta del aliado",nota:"El aliado no respondió en 7 días hábiles. Addi cancela para proteger al cliente."},
@@ -242,14 +592,15 @@ const TIP_DB = {
   entrega_transporte:      {macro:"Cierre del caso MP",sub:"Sub Orden Activa",micro:"Entrega y transporte",esp:"",nota:"El producto fue entregado. Hay guía activa o PQR que confirma la entrega."},
   aliado_cliente_contacto: {macro:"Cierre del caso MP",sub:"Sub Orden Activa",micro:"Aliado y cliente en contacto",esp:"",nota:"Ambas partes confirman que solucionarán el inconveniente directamente."},
   credito_reactivado:      {macro:"Cierre del caso MP",sub:"Sub Orden Cancelada",micro:"Crédito reactivado",esp:"",nota:"Se genera la reactivación de un crédito cancelado previamente."},
-  caso_abierto_pqr:        {macro:"⚠️ CASO ABIERTO",sub:"Prohibido tipificar cierre",micro:"Falta PQR válida",esp:"Solicitar soporte a transportadora",nota:"El aliado no tiene PQR ni guía firmada. Mantener en gestión y exigir el soporte."},
-  caso_abierto_aliado:     {macro:"⏳ EN GESTIÓN",sub:"Esperando respuesta del aliado",micro:"—",esp:"—",nota:"El aliado aún no ha respondido. Hacer seguimiento hasta cumplir los 7 días hábiles."},
-  caso_abierto_cliente:    {macro:"⏳ EN GESTIÓN",sub:"Esperando respuesta del cliente",micro:"—",esp:"—",nota:"El cliente aún no ha respondido. Hacer seguimiento hasta cumplir los 5 días hábiles."},
+  factura_enviada:         {tipo:"factura",nota:"El aliado ya envió la factura al cliente. En Kustomer las casillas de tipificación deben dejarse en blanco. Confirma con el cliente que la recibió y procede a cerrar el caso."},
+  caso_abierto_pqr:        {tipo:"danger",titulo:"⚠️ CASO ABIERTO — Prohibido tipificar",nota:"El aliado no tiene PQR ni guía firmada que demuestre la entrega. No se puede cerrar el caso. Mantener en gestión y exigir el soporte a la transportadora."},
+  caso_abierto_aliado:     {tipo:"warn",titulo:"⏳ EN GESTIÓN — Esperando aliado",nota:"El aliado aún no ha respondido. Hacer seguimiento hasta cumplir los 7 días hábiles. Si no responde, proceder con Cancelación Addi."},
+  caso_abierto_cliente:    {tipo:"warn",titulo:"⏳ EN GESTIÓN — Esperando cliente",nota:"El cliente aún no ha respondido. Hacer seguimiento hasta cumplir los 5 días hábiles. Si no responde, proceder con Falta de respuesta del cliente."},
 };
 
 const TIP_ARBOL = {
   info_factura:{p:"¿El aliado ya envió la factura?",o:[
-    {t:"✅ Sí, ya fue enviada",s:"aliado_cliente_contacto"},
+    {t:"✅ Sí, ya fue enviada al cliente",s:"factura_enviada"},
     {t:"⏳ No ha respondido aún",s:"caso_abierto_aliado"},
     {t:"🔴 Pasaron más de 7 días sin respuesta",s:"cancelacion_addi_7d"},
     {t:"👤 El cliente no respondió en 5 días",s:"falta_respuesta_cliente"}
@@ -366,33 +717,31 @@ const TIP_ARBOL = {
   ]}
 };
 
-let tipStack = [];
-let tipCierreKey = null;
+let tipStack=[], tipCierreKey=null;
 
 function tipOnMotivoChange(){
-  const motivo = document.getElementById('tip-motivo').value;
   document.getElementById('tip-preguntas').innerHTML='';
   document.getElementById('tip-btn').classList.add('hidden');
   document.getElementById('tip-resultado').classList.add('hidden');
-  tipStack = [];
-  tipCierreKey = null;
-  if(!motivo || !TIP_ARBOL[motivo]) return;
+  tipStack=[]; tipCierreKey=null;
+  const motivo=document.getElementById('tip-motivo').value;
+  if(!motivo||!TIP_ARBOL[motivo]) return;
   tipStack.push(TIP_ARBOL[motivo]);
-  tipRenderPregunta(TIP_ARBOL[motivo], 1);
+  tipRenderPregunta(TIP_ARBOL[motivo],1);
 }
 
-function tipRenderPregunta(nodo, paso){
-  const zona = document.getElementById('tip-preguntas');
-  const div = document.createElement('div');
-  div.className = 'card fade';
-  div.id = 'tip-paso-'+paso;
-  const esAlerta = paso > 1;
-  if(esAlerta) div.style.borderLeft = '3px solid var(--yellow)';
-  div.innerHTML = `
-    <div class="label" style="${esAlerta?'color:var(--yellow)':''}">
-      <i data-lucide="${esAlerta?'alert-circle':'help-circle'}" width="14"></i> ${paso}. ${nodo.p}
+function tipRenderPregunta(nodo,paso){
+  const zona=document.getElementById('tip-preguntas');
+  const div=document.createElement('div');
+  div.className='card fade';
+  div.id='tip-paso-'+paso;
+  if(paso>1) div.style.borderLeft='3px solid var(--warn)';
+  div.innerHTML=`
+    <div class="field-label" style="${paso>1?'color:var(--warn)':''}">
+      <span class="step-badge">${paso}</span>
+      ${nodo.p}
     </div>
-    <select onchange="tipOnRespuesta(${paso}, this.value)">
+    <select onchange="tipOnRespuesta(${paso},this.value)">
       <option value="" disabled selected>Selecciona la respuesta...</option>
       ${nodo.o.map((op,i)=>`<option value="${i}">${op.t}</option>`).join('')}
     </select>`;
@@ -400,113 +749,125 @@ function tipRenderPregunta(nodo, paso){
   icons();
 }
 
-function tipOnRespuesta(paso, idxStr){
+function tipOnRespuesta(paso,idxStr){
   if(idxStr==='') return;
-  // limpiar pasos posteriores
-  const zona = document.getElementById('tip-preguntas');
-  zona.querySelectorAll('[id^="tip-paso-"]').forEach(el=>{
+  document.querySelectorAll('[id^="tip-paso-"]').forEach(el=>{
     if(parseInt(el.id.replace('tip-paso-',''))>paso) el.remove();
   });
-  tipStack = tipStack.slice(0, paso);
-  tipCierreKey = null;
+  tipStack=tipStack.slice(0,paso);
+  tipCierreKey=null;
   document.getElementById('tip-btn').classList.add('hidden');
   document.getElementById('tip-resultado').classList.add('hidden');
-
-  const nodoActual = tipStack[paso-1];
-  if(!nodoActual) return;
-  const opcion = nodoActual.o[parseInt(idxStr)];
-  if(!opcion) return;
-  const sig = opcion.s;
-
-  if(typeof sig === 'string'){
-    tipCierreKey = sig;
+  const nodo=tipStack[paso-1];
+  if(!nodo) return;
+  const op=nodo.o[parseInt(idxStr)];
+  if(!op) return;
+  if(typeof op.s==='string'){
+    tipCierreKey=op.s;
     document.getElementById('tip-btn').classList.remove('hidden');
   } else {
-    tipStack.push(sig);
-    tipRenderPregunta(sig, paso+1);
+    tipStack.push(op.s);
+    tipRenderPregunta(op.s,paso+1);
   }
 }
 
 function tipMostrarCierre(){
-  const cierre = TIP_DB[tipCierreKey];
+  const cierre=TIP_DB[tipCierreKey];
   if(!cierre) return;
+  let html='';
 
-  const esAbierto = cierre.macro.includes('ABIERTO') || cierre.macro.includes('GESTIÓN');
-  const rutaTexto = [cierre.macro, cierre.sub, cierre.micro, cierre.esp].filter(Boolean).join(' > ');
-  window._tipRuta = rutaTexto;
-
-  const color = esAbierto ? (cierre.macro.includes('ABIERTO')?'var(--red)':'var(--yellow)') : 'var(--cyan)';
-  const iconName = esAbierto ? (cierre.macro.includes('ABIERTO')?'x-circle':'clock') : 'check-circle';
-
-  let html = `<div class="result-box fade" style="border-color:${color}">
-    <div class="result-header">
-      <h3 style="color:${color};display:flex;align-items:center;gap:8px;font-size:16px">
-        <i data-lucide="${iconName}" width="20" style="color:${color}"></i>
-        ${esAbierto ? cierre.macro : 'Tipificación de Cierre'}
-      </h3>
-      ${!esAbierto?`<button class="btn-copy" onclick="tipCopiarRuta()"><i data-lucide="copy" width="14"></i> Copiar ruta</button>`:''}
-    </div>`;
-
-  if(!esAbierto){
-    html += `<div class="casillas">
-      <div class="casilla"><div class="casilla-label">Macro</div><div class="casilla-value">${cierre.macro}</div></div>
-      <div class="casilla"><div class="casilla-label">Sub</div><div class="casilla-value">${cierre.sub||'<span class="casilla-empty">No aplica</span>'}</div></div>
-      <div class="casilla"><div class="casilla-label">Micro</div><div class="casilla-value">${cierre.micro||'<span class="casilla-empty">No aplica</span>'}</div></div>
-      <div class="casilla"><div class="casilla-label">Especificidad</div><div class="casilla-value">${cierre.esp||'<span class="casilla-empty">No aplica</span>'}</div></div>
-    </div>`;
-  }
-
-  html += `<div class="soporte"><strong>${esAbierto?'⚠️ Acción requerida':'📋 Nota de soporte'}:</strong> ${cierre.nota}</div>`;
-
-  if(!esAbierto){
-    html += `<div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
-      <div class="section-label">✅ Checklist antes de cerrar</div>
-      <div class="check-list" id="tip-checklist">
-        <label class="check-item" onclick="tipToggleCheck(this)"><input type="checkbox"><span>Envié el correo de cierre al <strong>aliado</strong> notificando el resultado</span></label>
-        <label class="check-item" onclick="tipToggleCheck(this)"><input type="checkbox"><span>Llamé al cliente <strong>2 veces</strong> — si no contestó: SMS + correo</span></label>
-        <label class="check-item" onclick="tipToggleCheck(this)"><input type="checkbox"><span>Verifiqué que el <strong>número de radicado</strong> en el correo es el correcto</span></label>
-        <label class="check-item" onclick="tipToggleCheck(this)"><input type="checkbox"><span>La tipificación en Kustomer coincide exactamente con la ruta sugerida</span></label>
+  if(cierre.tipo==='factura'){
+    html=`<div class="result-card fade">
+      <div class="info-box">
+        <i data-lucide="file-text" width="18"></i>
+        <div>
+          <div class="info-box-title">Factura enviada — No se tipifica en Kustomer</div>
+          <div class="info-box-text">${cierre.nota}</div>
+        </div>
       </div>
-      <div class="banner-ok" id="tip-banner"><i data-lucide="party-popper" width="20"></i> ¡Tu cierre quedó perfecto! Puedes cerrar el caso con confianza. ✅</div>
+      ${tipChecklist(false)}
+    </div>`;
+  } else if(cierre.tipo==='warn'||cierre.tipo==='danger'){
+    const cls=cierre.tipo;
+    const icon=cls==='danger'?'x-circle':'clock';
+    html=`<div class="result-card fade">
+      <div class="open-box ${cls}">
+        <i data-lucide="${icon}" width="18"></i>
+        <div>
+          <div class="open-box-title">${cierre.titulo}</div>
+          <div class="open-box-text">${cierre.nota}</div>
+        </div>
+      </div>
+    </div>`;
+  } else {
+    const ruta=[cierre.macro,cierre.sub,cierre.micro,cierre.esp].filter(Boolean).join(' > ');
+    window._tipRuta=ruta;
+    html=`<div class="result-card fade">
+      <div class="result-header">
+        <h3 style="color:var(--primary);font-size:16px;display:flex;align-items:center;gap:8px;font-weight:700">
+          <i data-lucide="check-circle" width="20" style="color:var(--primary)"></i>
+          Tipificación de Cierre
+        </h3>
+        <button class="btn-copy" onclick="tipCopiarRuta()"><i data-lucide="copy" width="14"></i> Copiar ruta</button>
+      </div>
+      <div class="casillas">
+        <div class="casilla"><div class="casilla-label">Macro</div><div class="casilla-value">${cierre.macro}</div></div>
+        <div class="casilla"><div class="casilla-label">Sub</div><div class="casilla-value">${cierre.sub||'<span class="casilla-empty">No aplica</span>'}</div></div>
+        <div class="casilla"><div class="casilla-label">Micro</div><div class="casilla-value">${cierre.micro||'<span class="casilla-empty">No aplica</span>'}</div></div>
+        <div class="casilla"><div class="casilla-label">Especificidad</div><div class="casilla-value">${cierre.esp||'<span class="casilla-empty">No aplica</span>'}</div></div>
+      </div>
+      <div class="nota-soporte">
+        <i data-lucide="info" width="16"></i>
+        <span><strong>Nota de soporte:</strong> ${cierre.nota}</span>
+      </div>
+      ${tipChecklist(true)}
     </div>`;
   }
 
-  html += `</div>`;
-
-  const zona = document.getElementById('tip-resultado');
-  zona.innerHTML = html;
+  const zona=document.getElementById('tip-resultado');
+  zona.innerHTML=html;
   zona.classList.remove('hidden');
   icons();
 }
 
+function tipChecklist(conTipificacion){
+  return `<div class="checklist-title"><i data-lucide="check-square" width="14"></i> Checklist antes de cerrar</div>
+  <div class="check-list" id="tip-checklist">
+    <label class="check-item" onclick="tipToggleCheck(this)"><input type="checkbox"><span>Envié el correo de cierre al <strong>aliado</strong> notificando el resultado</span></label>
+    <label class="check-item" onclick="tipToggleCheck(this)"><input type="checkbox"><span>Llamé al cliente <strong>2 veces</strong> — si no contestó: SMS + correo</span></label>
+    <label class="check-item" onclick="tipToggleCheck(this)"><input type="checkbox"><span>Verifiqué que el <strong>número de radicado</strong> en el correo es el correcto</span></label>
+    ${conTipificacion?`<label class="check-item" onclick="tipToggleCheck(this)"><input type="checkbox"><span>La tipificación en Kustomer coincide exactamente con la ruta sugerida</span></label>`:''}
+  </div>
+  <div class="banner-ok" id="tip-banner"><i data-lucide="party-popper" width="20"></i>&nbsp; ¡Tu cierre quedó perfecto! Puedes cerrar el caso con confianza. ✅</div>`;
+}
+
 function tipCopiarRuta(){
   navigator.clipboard.writeText(window._tipRuta||'').then(()=>{
-    const btn = document.querySelector('#tip-resultado .btn-copy');
+    const btn=document.querySelector('#tip-resultado .btn-copy');
     if(!btn) return;
-    const orig = btn.innerHTML;
-    btn.innerHTML = '<i data-lucide="check" width="14"></i> ¡Copiado!';
-    btn.style.background='var(--green)'; btn.style.color='#000'; btn.style.borderColor='var(--green)';
+    const orig=btn.innerHTML;
+    btn.innerHTML='<i data-lucide="check" width="14"></i> ¡Copiado!';
+    btn.style.background='var(--success)';btn.style.color='#fff';btn.style.borderColor='var(--success)';
     icons();
-    setTimeout(()=>{ btn.innerHTML=orig; btn.style.background=''; btn.style.color=''; btn.style.borderColor=''; icons(); }, 2000);
+    setTimeout(()=>{btn.innerHTML=orig;btn.style.background='';btn.style.color='';btn.style.borderColor='';icons();},2000);
   });
 }
 
 function tipToggleCheck(label){
   setTimeout(()=>{
-    const cb = label.querySelector('input');
-    label.classList.toggle('done', cb.checked);
-    const todos = document.querySelectorAll('#tip-checklist input');
-    const marcados = document.querySelectorAll('#tip-checklist input:checked');
-    const banner = document.getElementById('tip-banner');
-    if(banner) banner.style.display = (todos.length===marcados.length && todos.length>0)?'flex':'none';
-    if(todos.length===marcados.length && todos.length>0) icons();
+    const cb=label.querySelector('input');
+    label.classList.toggle('done',cb.checked);
+    const todos=document.querySelectorAll('#tip-checklist input');
+    const marcados=document.querySelectorAll('#tip-checklist input:checked');
+    const banner=document.getElementById('tip-banner');
+    if(banner){banner.style.display=(todos.length===marcados.length&&todos.length>0)?'flex':'none'; if(todos.length===marcados.length) icons();}
   },0);
 }
 
-// ═══════════════════════════════════════════════════════
-// REDACTOR — sistema de filtros + plantillas
-// ═══════════════════════════════════════════════════════
-const RED_DB = {
+// ═══════════════════════════════════════════════════
+// REDACTOR
+// ═══════════════════════════════════════════════════
+const RED_DB={
   aliado:{
     push:{
       motivos:[
@@ -675,31 +1036,27 @@ const RED_DB = {
   }
 };
 
-let redState = {dest:null, gest:null, motivo:null, urg:null};
+let redState={dest:null,gest:null,motivo:null,urg:null};
 
-function redOnDest(val, lbl){
-  redState = {dest:val, gest:null, motivo:null, urg:null};
-  document.querySelectorAll('[name=r-dest]').forEach(r=>r.closest('.radio-label').classList.remove('sel'));
-  lbl.classList.add('sel');
-  lbl.querySelector('input').checked = true;
+function redOnDest(val,lbl){
+  redState={dest:val,gest:null,motivo:null,urg:null};
+  document.querySelectorAll('[name=r-dest]').forEach(r=>r.closest('.radio-pill').classList.remove('sel'));
+  lbl.classList.add('sel'); lbl.querySelector('input').checked=true;
   document.getElementById('red-gest-zone').classList.remove('hidden');
   document.getElementById('red-motivo-zone').classList.add('hidden');
   document.getElementById('red-urg-zone').classList.add('hidden');
   document.getElementById('red-resultado').classList.add('hidden');
-  document.querySelectorAll('[name=r-gest],[name=r-urg]').forEach(r=>{
-    r.checked=false; r.closest('.radio-label').classList.remove('sel','sel-warn','sel-red');
-  });
+  document.querySelectorAll('[name=r-gest],[name=r-urg]').forEach(r=>{r.checked=false;r.closest('.radio-pill').classList.remove('sel','sel-warn','sel-red');});
 }
 
-function redOnGest(val, lbl){
-  redState.gest = val; redState.motivo = null; redState.urg = null;
-  document.querySelectorAll('[name=r-gest]').forEach(r=>r.closest('.radio-label').classList.remove('sel','sel-warn'));
-  lbl.classList.add('sel'); lbl.querySelector('input').checked = true;
-  // poblar motivos
-  const sel = document.getElementById('red-motivo');
-  sel.innerHTML = '<option value="" disabled selected>Selecciona el motivo...</option>';
+function redOnGest(val,lbl){
+  redState.gest=val; redState.motivo=null; redState.urg=null;
+  document.querySelectorAll('[name=r-gest]').forEach(r=>r.closest('.radio-pill').classList.remove('sel','sel-warn'));
+  lbl.classList.add('sel'); lbl.querySelector('input').checked=true;
+  const sel=document.getElementById('red-motivo');
+  sel.innerHTML='<option value="" disabled selected>Selecciona el motivo...</option>';
   RED_DB[redState.dest][val].motivos.forEach(m=>{
-    const o = document.createElement('option'); o.value=m.val; o.textContent=m.label; sel.appendChild(o);
+    const o=document.createElement('option'); o.value=m.val; o.textContent=m.label; sel.appendChild(o);
   });
   document.getElementById('red-motivo-zone').classList.remove('hidden');
   document.getElementById('red-urg-zone').classList.add('hidden');
@@ -708,10 +1065,10 @@ function redOnGest(val, lbl){
 
 function redOnMotivo(val){
   if(!val) return;
-  redState.motivo = val; redState.urg = null;
+  redState.motivo=val; redState.urg=null;
   document.getElementById('red-resultado').classList.add('hidden');
-  document.querySelectorAll('[name=r-urg]').forEach(r=>{r.checked=false; r.closest('.radio-label').classList.remove('sel','sel-warn','sel-red');});
-  const tieneUrg = RED_DB[redState.dest][redState.gest].urgencia;
+  document.querySelectorAll('[name=r-urg]').forEach(r=>{r.checked=false;r.closest('.radio-pill').classList.remove('sel','sel-warn','sel-red');});
+  const tieneUrg=RED_DB[redState.dest][redState.gest].urgencia;
   if(tieneUrg){
     document.getElementById('red-urg-zone').classList.remove('hidden');
   } else {
@@ -720,40 +1077,34 @@ function redOnMotivo(val){
   }
 }
 
-function redOnUrg(val, lbl){
-  redState.urg = val;
-  document.querySelectorAll('[name=r-urg]').forEach(r=>r.closest('.radio-label').classList.remove('sel','sel-warn','sel-red'));
-  const cls = val==='normal'?'sel':val==='urgente'?'sel-warn':'sel-red';
-  lbl.classList.add(cls); lbl.querySelector('input').checked = true;
+function redOnUrg(val,lbl){
+  redState.urg=val;
+  document.querySelectorAll('[name=r-urg]').forEach(r=>r.closest('.radio-pill').classList.remove('sel','sel-warn','sel-red'));
+  const cls=val==='normal'?'sel':val==='urgente'?'sel-warn':'sel-red';
+  lbl.classList.add(cls); lbl.querySelector('input').checked=true;
   redMostrar();
 }
 
 function redMostrar(){
-  const {dest, gest, motivo, urg} = redState;
+  const{dest,gest,motivo,urg}=redState;
   if(!dest||!gest||!motivo) return;
-  const cfg = RED_DB[dest][gest];
-  let plantilla;
-  if(cfg.urgencia){
-    if(!urg) return;
-    plantilla = cfg.p[motivo]?.[urg];
-  } else {
-    plantilla = cfg.p[motivo];
-  }
-  if(!plantilla) return;
+  const cfg=RED_DB[dest][gest];
+  let p=cfg.urgencia?(urg?cfg.p[motivo]?.[urg]:null):cfg.p[motivo];
+  if(!p) return;
 
-  const zona = document.getElementById('red-resultado');
-  zona.innerHTML = `
-    <div class="result-box fade">
+  const zona=document.getElementById('red-resultado');
+  zona.innerHTML=`
+    <div class="result-card fade">
       <div class="result-header">
-        <h3 style="color:var(--text);font-size:15px;display:flex;align-items:center;gap:8px">
-          <i data-lucide="mail" width="18" style="color:var(--blue)"></i>
-          ${plantilla.t}
+        <h3 style="color:var(--primary);font-size:15px;display:flex;align-items:center;gap:8px;font-weight:700">
+          <i data-lucide="mail" width="18" style="color:var(--addi-blue)"></i>
+          ${p.t}
         </h3>
         <button class="btn-copy" onclick="redCopiar()">
           <i data-lucide="copy" width="14"></i> Copiar
         </button>
       </div>
-      <div class="email-body" id="red-email-body">${fmtVars(plantilla.c)}</div>
+      <div class="email-body" id="red-email-body">${fmtVars(p.c)}</div>
       <div class="hint">
         <i data-lucide="info" width="12"></i>
         Los textos entre corchetes <strong>[xxx]</strong> debes reemplazarlos antes de enviar.
@@ -764,17 +1115,16 @@ function redMostrar(){
 }
 
 function redCopiar(){
-  const el = document.getElementById('red-email-body');
+  const el=document.getElementById('red-email-body');
   if(!el) return;
-  const txt = el.innerText;
-  navigator.clipboard.writeText(txt).then(()=>{
-    const btn = document.querySelector('#red-resultado .btn-copy');
+  navigator.clipboard.writeText(el.innerText).then(()=>{
+    const btn=document.querySelector('#red-resultado .btn-copy');
     if(!btn) return;
-    const orig = btn.innerHTML;
-    btn.innerHTML = '<i data-lucide="check" width="14"></i> ¡Copiado!';
-    btn.style.background='var(--green)'; btn.style.color='#000'; btn.style.borderColor='var(--green)';
+    const orig=btn.innerHTML;
+    btn.innerHTML='<i data-lucide="check" width="14"></i> ¡Copiado!';
+    btn.style.background='var(--success)';btn.style.color='#fff';btn.style.borderColor='var(--success)';
     icons();
-    setTimeout(()=>{ btn.innerHTML=orig; btn.style.background=''; btn.style.color=''; btn.style.borderColor=''; icons(); },2000);
+    setTimeout(()=>{btn.innerHTML=orig;btn.style.background='';btn.style.color='';btn.style.borderColor='';icons();},2000);
   });
 }
 </script>
